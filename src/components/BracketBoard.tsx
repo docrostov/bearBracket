@@ -135,20 +135,68 @@ export default function BracketBoard({
                   return (
                     <div
                       key={matchup.id}
-                      className={`flex items-center gap-3 rounded-lg p-2 ${rowBg}`}
+                      className={`flex flex-col gap-2 rounded-lg p-2 ${rowBg}`}
                     >
-                      <div className="w-1/2">
-                        <ContestantCard
-                          option={byeOption}
-                          isPicked
-                          disabled
-                          isPending={false}
-                          onSelect={() => {}}
-                        />
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-sm text-zinc-700 dark:text-zinc-300">
+                          <span className="font-medium text-zinc-950 dark:text-zinc-50">
+                            {byeOption?.name}
+                          </span>{" "}
+                          received a first-round bye.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setExpandedMatchupId((current) =>
+                              current === matchup.id ? null : matchup.id
+                            )
+                          }
+                          aria-label={
+                            isExpanded ? "Hide photo" : "Show photo"
+                          }
+                          aria-pressed={isExpanded}
+                          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-colors ${
+                            isExpanded
+                              ? "border-zinc-950 bg-zinc-950 text-white dark:border-zinc-50 dark:bg-zinc-50 dark:text-zinc-950"
+                              : "border-zinc-300 text-zinc-500 hover:border-zinc-500 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:text-zinc-200"
+                          }`}
+                        >
+                          <svg
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            className="h-4 w-4"
+                            aria-hidden
+                          >
+                            <circle
+                              cx="8.5"
+                              cy="8.5"
+                              r="5.5"
+                              stroke="currentColor"
+                              strokeWidth="1.6"
+                            />
+                            <line
+                              x1="13"
+                              y1="13"
+                              x2="17.5"
+                              y2="17.5"
+                              stroke="currentColor"
+                              strokeWidth="1.6"
+                              strokeLinecap="round"
+                            />
+                          </svg>
+                        </button>
                       </div>
-                      <span className="text-xs text-zinc-500 dark:text-zinc-500">
-                        Bye — advances automatically
-                      </span>
+                      {isExpanded && (
+                        <div className="w-1/2 min-w-[140px]">
+                          <ContestantCard
+                            option={byeOption}
+                            isPicked
+                            disabled
+                            isPending={false}
+                            onSelect={() => {}}
+                          />
+                        </div>
+                      )}
                     </div>
                   );
                 }
