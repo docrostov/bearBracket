@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import {
   matchupKey,
@@ -8,11 +7,16 @@ import {
   type MatchupLite,
 } from "@/lib/bracket";
 
+// The UI applies picks optimistically and doesn't wait on a full page
+// re-render, so this doesn't call revalidatePath — the client already
+// reflects the change locally, and the next real navigation will read the
+// current database state anyway.
 export async function submitPick(
   competitionSlug: string,
   matchupId: string,
-  contestantId: string
-) {
+  contestantId: string,
+  knownEntryId: string | null
+): Promise<{ entryId: string }> {
   const supabase = await createClient();
 
   const { data: claims } = await supabase.auth.getClaims();
@@ -41,26 +45,30 @@ export async function submitPick(
     throw new Error("Matchup not found.");
   }
 
-  let entryId: string;
-  const { data: existingEntry } = await supabase
-    .from("entries")
-    .select("id")
-    .eq("competition_id", competition.id)
-    .eq("user_id", userId)
-    .maybeSingle();
-
-  if (existingEntry) {
-    entryId = existingEntry.id;
-  } else {
-    const { data: newEntry, error: entryError } = await supabase
+  // Skip the entry lookup entirely once the client already knows it —
+  // saves a round trip on every pick after the user's first.
+  let entryId = knownEntryId;
+  if (!entryId) {
+    const { data: existingEntry } = await supabase
       .from("entries")
-      .insert({ competition_id: competition.id, user_id: userId })
       .select("id")
-      .single();
-    if (entryError || !newEntry) {
-      throw new Error(entryError?.message ?? "Could not create an entry.");
+      .eq("competition_id", competition.id)
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (existingEntry) {
+      entryId = existingEntry.id;
+    } else {
+      const { data: newEntry, error: entryError } = await supabase
+        .from("entries")
+        .insert({ competition_id: competition.id, user_id: userId })
+        .select("id")
+        .single();
+      if (entryError || !newEntry) {
+        throw new Error(entryError?.message ?? "Could not create an entry.");
+      }
+      entryId = newEntry.id;
     }
-    entryId = newEntry.id;
   }
 
   const { data: existingPicks } = await supabase
@@ -97,5 +105,5 @@ export async function submitPick(
     throw new Error(error.message);
   }
 
-  revalidatePath(`/competitions/${competitionSlug}`);
+  return { entryId };
 }
