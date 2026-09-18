@@ -253,7 +253,7 @@ export default function BracketBoard({
                         </button>
                       </div>
                       {isExpanded && (
-                        <div className="w-1/2 min-w-[140px]">
+                        <div className="w-full">
                           <ContestantCard
                             option={byeOption}
                             isPicked
