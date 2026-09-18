@@ -127,7 +127,7 @@ export default function BracketBoard({
                     key={matchup.id}
                     className={`flex flex-col gap-1 rounded-lg p-2 ${
                       i % 2 === 0
-                        ? "bg-zinc-100 dark:bg-[#3b3b3b]"
+                        ? "bg-zinc-100 dark:bg-[#141414]"
                         : "bg-white dark:bg-[#222222]"
                     }`}
                   >
