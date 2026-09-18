@@ -29,6 +29,8 @@ interface ContestantCardProps {
   isPicked: boolean;
   disabled: boolean;
   isPending: boolean;
+  /** Shown in place of a name when option is null — "TBD" for an unresolved future round, "Bye" for a first-round bye. */
+  emptyLabel?: string;
   onSelect: () => void;
 }
 
@@ -37,6 +39,7 @@ export default function ContestantCard({
   isPicked,
   disabled,
   isPending,
+  emptyLabel = "TBD",
   onSelect,
 }: ContestantCardProps) {
   return (
@@ -82,7 +85,7 @@ export default function ContestantCard({
               : "italic text-zinc-400 dark:text-zinc-600"
         }`}
       >
-        {option ? `${option.seed ? `#${option.seed} ` : ""}${option.name}` : "TBD"}
+        {option ? `${option.seed ? `#${option.seed} ` : ""}${option.name}` : emptyLabel}
       </span>
     </button>
   );

@@ -25,9 +25,35 @@ export function feederSlots(round: number, slotInRound: number): [number, number
 }
 
 /**
+ * A matchup with only one contestant seeded (the other side null) is a bye:
+ * nothing to vote on, that contestant advances automatically — e.g. Fat Bear
+ * Week's real bracket has 12 contestants with 4 first-round byes, seeded
+ * into a 16-slot bracket shape.
+ */
+export function isBye(matchup: MatchupLite): boolean {
+  return (
+    (matchup.contestant_a_id !== null) !== (matchup.contestant_b_id !== null)
+  );
+}
+
+export function byeContestantId(matchup: MatchupLite): string | null {
+  if (!isBye(matchup)) return null;
+  return matchup.contestant_a_id ?? matchup.contestant_b_id;
+}
+
+/** The contestant who wins this matchup in a user's predicted bracket: automatic for a bye, otherwise whatever they picked. */
+function effectiveWinner(
+  matchup: MatchupLite,
+  picksByMatchupId: Map<string, string>
+): string | null {
+  if (isBye(matchup)) return byeContestantId(matchup);
+  return picksByMatchupId.get(matchup.id) ?? null;
+}
+
+/**
  * The two contestant ids a user could legally pick for this matchup: from
- * the official round-1 bracket, or from that user's own picks on the
- * round-(r-1) matchups that feed this slot.
+ * the official round-1 bracket, or from that user's own picks (or an
+ * automatic bye) on the round-(r-1) matchups that feed this slot.
  */
 export function resolveLegalOptions(
   matchup: MatchupLite,
@@ -46,7 +72,7 @@ export function resolveLegalOptions(
   const matchupB = matchupsByKey.get(matchupKey(matchup.round - 1, slotB));
 
   return [
-    matchupA ? (picksByMatchupId.get(matchupA.id) ?? null) : null,
-    matchupB ? (picksByMatchupId.get(matchupB.id) ?? null) : null,
+    matchupA ? effectiveWinner(matchupA, picksByMatchupId) : null,
+    matchupB ? effectiveWinner(matchupB, picksByMatchupId) : null,
   ];
 }

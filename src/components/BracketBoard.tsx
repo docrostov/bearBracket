@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import {
+  isBye,
   matchupKey,
   resolveLegalOptions,
   type MatchupLite,
@@ -121,6 +122,9 @@ export default function BracketBoard({
                 const isPending = pendingMatchupId === matchup.id;
                 const isExpanded = expandedMatchupId === matchup.id;
                 const canExpand = optionA !== null && optionB !== null;
+                // A bye has nothing to vote on — the lone contestant
+                // advances automatically, not by anyone picking them.
+                const matchupIsBye = isBye(matchup);
 
                 return (
                   <div
@@ -187,20 +191,34 @@ export default function BracketBoard({
                     >
                       <ContestantCard
                         option={optionA}
-                        isPicked={optionA !== null && optionA.id === pickedId}
-                        disabled={!canPick || optionA === null}
+                        isPicked={
+                          matchupIsBye
+                            ? optionA !== null
+                            : optionA !== null && optionA.id === pickedId
+                        }
+                        disabled={matchupIsBye || !canPick || optionA === null}
                         isPending={isPending}
+                        emptyLabel={matchupIsBye ? "Bye" : "TBD"}
                         onSelect={() =>
-                          optionA && handlePick(matchup, optionA.id)
+                          !matchupIsBye &&
+                          optionA &&
+                          handlePick(matchup, optionA.id)
                         }
                       />
                       <ContestantCard
                         option={optionB}
-                        isPicked={optionB !== null && optionB.id === pickedId}
-                        disabled={!canPick || optionB === null}
+                        isPicked={
+                          matchupIsBye
+                            ? optionB !== null
+                            : optionB !== null && optionB.id === pickedId
+                        }
+                        disabled={matchupIsBye || !canPick || optionB === null}
                         isPending={isPending}
+                        emptyLabel={matchupIsBye ? "Bye" : "TBD"}
                         onSelect={() =>
-                          optionB && handlePick(matchup, optionB.id)
+                          !matchupIsBye &&
+                          optionB &&
+                          handlePick(matchup, optionB.id)
                         }
                       />
                     </div>
