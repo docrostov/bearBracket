@@ -29,8 +29,6 @@ interface ContestantCardProps {
   isPicked: boolean;
   disabled: boolean;
   isPending: boolean;
-  /** Forced zoom, independent of hover — driven by the matchup's magnifying-glass toggle. */
-  isExpanded: boolean;
   onSelect: () => void;
 }
 
@@ -39,7 +37,6 @@ export default function ContestantCard({
   isPicked,
   disabled,
   isPending,
-  isExpanded,
   onSelect,
 }: ContestantCardProps) {
   return (
@@ -47,35 +44,34 @@ export default function ContestantCard({
       type="button"
       disabled={disabled}
       onClick={onSelect}
-      className={`group relative flex flex-1 flex-col items-center gap-2 rounded-md border p-3 transition-colors ${
+      className={`group flex flex-col gap-1.5 rounded-md border p-1.5 transition-colors ${
         isPicked
           ? "border-zinc-950 dark:border-zinc-50"
           : "border-zinc-200 dark:border-zinc-800"
-      } ${option ? "hover:enabled:z-10" : "cursor-default"} ${
-        isExpanded ? "z-10" : ""
-      } ${isPending ? "opacity-70" : ""}`}
+      } ${option === null ? "cursor-default" : ""} ${
+        isPending ? "opacity-70" : ""
+      }`}
     >
-      <div className="flex h-16 w-16 items-center justify-center">
-        <div
-          className={`flex h-16 w-16 items-center justify-center overflow-hidden rounded-full text-3xl shadow-sm transition-transform duration-200 ease-out ${
-            option
-              ? `${placeholderColor(option.name)} group-hover:scale-[1.8] ${
-                  isExpanded ? "scale-[1.8]" : ""
-                }`
-              : ""
-          }`}
-        >
-          {option?.image_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={option.image_url}
-              alt={option.name}
-              className="h-full w-full object-cover"
-            />
-          ) : option ? (
+      {/* Official Fat Bear Week comparison photos run ~5:2 (two side-by-side
+          shots baked into one image) — this ratio keeps them legible instead
+          of cropping into a headshot-style circle. */}
+      <div className="aspect-[5/2] w-full overflow-hidden rounded bg-zinc-100 dark:bg-zinc-900">
+        {option?.image_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={option.image_url}
+            alt={option.name}
+            className="h-full w-full object-cover transition-transform duration-200 ease-out group-hover:scale-105"
+          />
+        ) : option ? (
+          <div
+            className={`flex h-full w-full items-center justify-center text-3xl ${placeholderColor(option.name)}`}
+          >
             <span aria-hidden>🐻</span>
-          ) : null}
-        </div>
+          </div>
+        ) : (
+          <div className="flex h-full w-full items-center justify-center" />
+        )}
       </div>
       <span
         className={`text-sm ${

@@ -125,23 +125,13 @@ export default function BracketBoard({
                 return (
                   <div
                     key={matchup.id}
-                    className={`flex flex-col gap-1 rounded-lg p-2 ${
+                    className={`flex flex-col gap-2 rounded-lg p-2 ${
                       i % 2 === 0
                         ? "bg-zinc-100 dark:bg-[#141414]"
                         : "bg-white dark:bg-[#222222]"
                     }`}
                   >
-                    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-                      <ContestantCard
-                        option={optionA}
-                        isPicked={optionA !== null && optionA.id === pickedId}
-                        disabled={!canPick || optionA === null}
-                        isPending={isPending}
-                        isExpanded={isExpanded}
-                        onSelect={() =>
-                          optionA && handlePick(matchup, optionA.id)
-                        }
-                      />
+                    <div className="flex items-center justify-end">
                       <button
                         type="button"
                         disabled={!canExpand}
@@ -184,12 +174,31 @@ export default function BracketBoard({
                           />
                         </svg>
                       </button>
+                    </div>
+                    {/* Collapsed: side by side, compact. Expanded: each photo
+                        gets the full row width instead of just scaling up in
+                        place, since these photos need real size to read. */}
+                    <div
+                      className={
+                        isExpanded
+                          ? "flex flex-col gap-3"
+                          : "grid grid-cols-2 gap-2"
+                      }
+                    >
+                      <ContestantCard
+                        option={optionA}
+                        isPicked={optionA !== null && optionA.id === pickedId}
+                        disabled={!canPick || optionA === null}
+                        isPending={isPending}
+                        onSelect={() =>
+                          optionA && handlePick(matchup, optionA.id)
+                        }
+                      />
                       <ContestantCard
                         option={optionB}
                         isPicked={optionB !== null && optionB.id === pickedId}
                         disabled={!canPick || optionB === null}
                         isPending={isPending}
-                        isExpanded={isExpanded}
                         onSelect={() =>
                           optionB && handlePick(matchup, optionB.id)
                         }
