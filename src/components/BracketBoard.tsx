@@ -125,15 +125,38 @@ export default function BracketBoard({
                 // A bye has nothing to vote on — the lone contestant
                 // advances automatically, not by anyone picking them.
                 const matchupIsBye = isBye(matchup);
+                const rowBg =
+                  i % 2 === 0
+                    ? "bg-zinc-100 dark:bg-[#141414]"
+                    : "bg-white dark:bg-[#222222]";
+
+                if (matchupIsBye) {
+                  const byeOption = optionA ?? optionB;
+                  return (
+                    <div
+                      key={matchup.id}
+                      className={`flex items-center gap-3 rounded-lg p-2 ${rowBg}`}
+                    >
+                      <div className="w-1/2">
+                        <ContestantCard
+                          option={byeOption}
+                          isPicked
+                          disabled
+                          isPending={false}
+                          onSelect={() => {}}
+                        />
+                      </div>
+                      <span className="text-xs text-zinc-500 dark:text-zinc-500">
+                        Bye — advances automatically
+                      </span>
+                    </div>
+                  );
+                }
 
                 return (
                   <div
                     key={matchup.id}
-                    className={`flex flex-col gap-2 rounded-lg p-2 ${
-                      i % 2 === 0
-                        ? "bg-zinc-100 dark:bg-[#141414]"
-                        : "bg-white dark:bg-[#222222]"
-                    }`}
+                    className={`flex flex-col gap-2 rounded-lg p-2 ${rowBg}`}
                   >
                     <div className="flex items-center justify-end">
                       <button
@@ -191,34 +214,20 @@ export default function BracketBoard({
                     >
                       <ContestantCard
                         option={optionA}
-                        isPicked={
-                          matchupIsBye
-                            ? optionA !== null
-                            : optionA !== null && optionA.id === pickedId
-                        }
-                        disabled={matchupIsBye || !canPick || optionA === null}
+                        isPicked={optionA !== null && optionA.id === pickedId}
+                        disabled={!canPick || optionA === null}
                         isPending={isPending}
-                        emptyLabel={matchupIsBye ? "Bye" : "TBD"}
                         onSelect={() =>
-                          !matchupIsBye &&
-                          optionA &&
-                          handlePick(matchup, optionA.id)
+                          optionA && handlePick(matchup, optionA.id)
                         }
                       />
                       <ContestantCard
                         option={optionB}
-                        isPicked={
-                          matchupIsBye
-                            ? optionB !== null
-                            : optionB !== null && optionB.id === pickedId
-                        }
-                        disabled={matchupIsBye || !canPick || optionB === null}
+                        isPicked={optionB !== null && optionB.id === pickedId}
+                        disabled={!canPick || optionB === null}
                         isPending={isPending}
-                        emptyLabel={matchupIsBye ? "Bye" : "TBD"}
                         onSelect={() =>
-                          !matchupIsBye &&
-                          optionB &&
-                          handlePick(matchup, optionB.id)
+                          optionB && handlePick(matchup, optionB.id)
                         }
                       />
                     </div>
