@@ -107,3 +107,34 @@ export async function submitPick(
 
   return { entryId };
 }
+
+export async function clearPicks(
+  competitionSlug: string,
+  entryId: string
+): Promise<void> {
+  const supabase = await createClient();
+
+  const { data: claims } = await supabase.auth.getClaims();
+  if (!claims?.claims.sub) {
+    throw new Error("Sign in to manage picks.");
+  }
+
+  const { data: competition } = await supabase
+    .from("competitions")
+    .select("status")
+    .eq("slug", competitionSlug)
+    .single();
+
+  if (!competition || competition.status !== "open") {
+    throw new Error("This competition isn't open for changes.");
+  }
+
+  const { error } = await supabase
+    .from("picks")
+    .delete()
+    .eq("entry_id", entryId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}

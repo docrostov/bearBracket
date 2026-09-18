@@ -7,7 +7,7 @@ import {
   resolveLegalOptions,
   type MatchupLite,
 } from "@/lib/bracket";
-import { submitPick } from "@/app/competitions/[slug]/actions";
+import { clearPicks, submitPick } from "@/app/competitions/[slug]/actions";
 import ContestantCard, { type ContestantOption } from "@/components/ContestantCard";
 
 interface BracketBoardProps {
@@ -44,6 +44,8 @@ export default function BracketBoard({
   const [expandedMatchupId, setExpandedMatchupId] = useState<string | null>(
     null
   );
+  const [isClearing, setIsClearing] = useState(false);
+  const [clearError, setClearError] = useState<string | null>(null);
   const [, startTransition] = useTransition();
 
   const contestantsById = new Map(contestants.map((c) => [c.id, c]));
@@ -102,14 +104,62 @@ export default function BracketBoard({
     });
   }
 
+  function handleClearPicks() {
+    if (!entryId || pickedCount === 0) return;
+    if (
+      !window.confirm(
+        "Clear all your picks for this competition? This can't be undone."
+      )
+    ) {
+      return;
+    }
+
+    const previous = picks;
+    setPicks(new Map());
+    setClearError(null);
+    setIsClearing(true);
+
+    startTransition(async () => {
+      try {
+        await clearPicks(competitionSlug, entryId);
+      } catch (err) {
+        setPicks(previous);
+        setClearError(
+          err instanceof Error ? err.message : "Couldn't clear picks."
+        );
+      } finally {
+        setIsClearing(false);
+      }
+    });
+  }
+
   return (
     <div className="flex flex-col gap-6">
       {canPick && pickableMatchups.length > 0 && (
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          {isComplete
-            ? "All picks made."
-            : `${pickedCount} of ${pickableMatchups.length} picks made — ${remainingCount} left.`}
-        </p>
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              {isComplete
+                ? "All picks made."
+                : `${pickedCount} of ${pickableMatchups.length} picks made — ${remainingCount} left.`}
+            </p>
+            {pickedCount > 0 && (
+              <button
+                type="button"
+                onClick={handleClearPicks}
+                disabled={isClearing}
+                className="shrink-0 text-xs text-zinc-500 underline decoration-dotted hover:text-zinc-800 disabled:opacity-50 dark:text-zinc-500 dark:hover:text-zinc-200"
+              >
+                {isClearing ? "Clearing…" : "Clear picks"}
+              </button>
+            )}
+          </div>
+          {clearError && (
+            <p className="text-xs text-red-600 dark:text-red-400">
+              {clearError}
+            </p>
+          )}
+        </div>
       )}
 
       <div className="flex flex-col gap-10">
