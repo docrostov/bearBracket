@@ -54,6 +54,13 @@ export default function BracketBoard({
     (a, b) => a - b
   );
 
+  // Byes never get a pick (nothing to decide), so they don't count toward
+  // "how much is left."
+  const pickableMatchups = matchups.filter((m) => !isBye(m));
+  const pickedCount = pickableMatchups.filter((m) => picks.has(m.id)).length;
+  const remainingCount = pickableMatchups.length - pickedCount;
+  const isComplete = pickableMatchups.length > 0 && remainingCount === 0;
+
   function handlePick(matchup: MatchupLite, contestantId: string) {
     const previous = picks.get(matchup.id) ?? null;
 
@@ -96,8 +103,17 @@ export default function BracketBoard({
   }
 
   return (
-    <div className="flex flex-col gap-10">
-      {rounds.map((round) => (
+    <div className="flex flex-col gap-6">
+      {canPick && pickableMatchups.length > 0 && (
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          {isComplete
+            ? "All picks made."
+            : `${pickedCount} of ${pickableMatchups.length} picks made — ${remainingCount} left.`}
+        </p>
+      )}
+
+      <div className="flex flex-col gap-10">
+        {rounds.map((round) => (
         <section key={round} className="flex flex-col gap-3">
           <h2 className="text-xs font-medium uppercase tracking-wide text-zinc-500">
             Round {round}
@@ -290,6 +306,21 @@ export default function BracketBoard({
           </div>
         </section>
       ))}
+      </div>
+
+      {canPick && pickableMatchups.length > 0 && (
+        <div
+          className={`rounded-lg border p-4 text-sm ${
+            isComplete
+              ? "border-emerald-600/40 bg-emerald-50 text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-950/40 dark:text-emerald-300"
+              : "border-zinc-200 bg-zinc-50 text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300"
+          }`}
+        >
+          {isComplete
+            ? "Your bracket is complete — every matchup has a pick."
+            : `${remainingCount} matchup${remainingCount === 1 ? "" : "s"} still need${remainingCount === 1 ? "s" : ""} a pick.`}
+        </div>
+      )}
     </div>
   );
 }
