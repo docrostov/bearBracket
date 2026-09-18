@@ -23,6 +23,7 @@ export interface Database {
           display_name?: string
           created_at?: string
         }
+        Relationships: []
       }
       competitions: {
         Row: {
@@ -58,6 +59,7 @@ export interface Database {
           created_by?: string | null
           created_at?: string
         }
+        Relationships: []
       }
       contestants: {
         Row: {
@@ -87,6 +89,7 @@ export interface Database {
           metadata?: Record<string, unknown>
           created_at?: string
         }
+        Relationships: []
       }
       matchups: {
         Row: {
@@ -119,6 +122,7 @@ export interface Database {
           winner_id?: string | null
           created_at?: string
         }
+        Relationships: []
       }
       entries: {
         Row: {
@@ -139,6 +143,7 @@ export interface Database {
           user_id?: string
           created_at?: string
         }
+        Relationships: []
       }
       picks: {
         Row: {
@@ -165,7 +170,14 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
+        Relationships: []
       }
     }
+    Views: Record<string, never>
+    Functions: Record<string, never>
+    Enums: {
+      competition_status: CompetitionStatus
+    }
+    CompositeTypes: Record<string, never>
   }
 }
