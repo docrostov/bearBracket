@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function Home() {
@@ -21,16 +22,18 @@ export default async function Home() {
       ) : (
         <ul className="flex flex-col gap-3">
           {competitions.map((competition) => (
-            <li
-              key={competition.id}
-              className="rounded-md border border-zinc-200 bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-950"
-            >
-              <p className="font-medium text-zinc-950 dark:text-zinc-50">
-                {competition.name}
-              </p>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                {competition.year} &middot; {competition.status}
-              </p>
+            <li key={competition.id}>
+              <Link
+                href={`/competitions/${competition.slug}`}
+                className="block rounded-md border border-zinc-200 bg-white px-4 py-3 transition-colors hover:border-zinc-300 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-zinc-700"
+              >
+                <p className="font-medium text-zinc-950 dark:text-zinc-50">
+                  {competition.name}
+                </p>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  {competition.year} &middot; {competition.status}
+                </p>
+              </Link>
             </li>
           ))}
         </ul>
