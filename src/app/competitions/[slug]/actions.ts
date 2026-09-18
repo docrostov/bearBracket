@@ -37,7 +37,7 @@ export async function submitPick(
 
   const { data: matchups } = await supabase
     .from("matchups")
-    .select("id, round, slot_in_round, contestant_a_id, contestant_b_id")
+    .select("id, round, slot_in_round, contestant_a_id, contestant_b_id, winner_id")
     .eq("competition_id", competition.id);
 
   const matchup = (matchups ?? []).find((m) => m.id === matchupId);

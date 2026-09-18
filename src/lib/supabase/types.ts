@@ -34,6 +34,7 @@ export interface Database {
           bracket_size: number
           status: CompetitionStatus
           picks_lock_at: string | null
+          points_per_round: number[]
           created_by: string | null
           created_at: string
         }
@@ -45,6 +46,7 @@ export interface Database {
           bracket_size: number
           status?: CompetitionStatus
           picks_lock_at?: string | null
+          points_per_round?: number[]
           created_by?: string | null
           created_at?: string
         }
@@ -56,6 +58,7 @@ export interface Database {
           bracket_size?: number
           status?: CompetitionStatus
           picks_lock_at?: string | null
+          points_per_round?: number[]
           created_by?: string | null
           created_at?: string
         }

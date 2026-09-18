@@ -12,6 +12,8 @@ export interface MatchupLite {
   slot_in_round: number;
   contestant_a_id: string | null;
   contestant_b_id: string | null;
+  /** The official real-world result, filled in round by round as the actual competition plays out. Null until decided. */
+  winner_id: string | null;
 }
 
 export function matchupKey(round: number, slotInRound: number): string {

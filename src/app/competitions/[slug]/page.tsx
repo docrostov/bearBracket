@@ -90,9 +90,17 @@ export default async function CompetitionPage(
         >
           &larr; All competitions
         </Link>
-        <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
-          {competition.name}
-        </h1>
+        <div className="flex items-baseline justify-between gap-3">
+          <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+            {competition.name}
+          </h1>
+          <Link
+            href={`/competitions/${competition.slug}/leaderboard`}
+            className="shrink-0 text-sm text-zinc-500 underline hover:text-zinc-800 dark:hover:text-zinc-300"
+          >
+            Leaderboard
+          </Link>
+        </div>
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
           {competition.year} &middot; {competition.status}
         </p>
