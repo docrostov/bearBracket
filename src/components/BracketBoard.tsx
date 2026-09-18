@@ -137,8 +137,8 @@ export default function BracketBoard({
                       key={matchup.id}
                       className={`flex flex-col gap-2 rounded-lg p-2 ${rowBg}`}
                     >
-                      <div className="flex items-center justify-between gap-3">
-                        <p className="text-sm text-zinc-700 dark:text-zinc-300">
+                      <div className="flex items-center gap-3">
+                        <p className="flex-1 text-center text-sm text-zinc-700 dark:text-zinc-300">
                           <span className="font-medium text-zinc-950 dark:text-zinc-50">
                             {byeOption?.name}
                           </span>{" "}
