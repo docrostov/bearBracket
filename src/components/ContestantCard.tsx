@@ -29,6 +29,8 @@ interface ContestantCardProps {
   isPicked: boolean;
   disabled: boolean;
   isPending: boolean;
+  /** Forced zoom, independent of hover — driven by the matchup's magnifying-glass toggle. */
+  isExpanded: boolean;
   onSelect: () => void;
 }
 
@@ -37,6 +39,7 @@ export default function ContestantCard({
   isPicked,
   disabled,
   isPending,
+  isExpanded,
   onSelect,
 }: ContestantCardProps) {
   return (
@@ -49,14 +52,16 @@ export default function ContestantCard({
           ? "border-zinc-950 dark:border-zinc-50"
           : "border-zinc-200 dark:border-zinc-800"
       } ${option ? "hover:enabled:z-10" : "cursor-default"} ${
-        isPending ? "opacity-70" : ""
-      }`}
+        isExpanded ? "z-10" : ""
+      } ${isPending ? "opacity-70" : ""}`}
     >
       <div className="flex h-16 w-16 items-center justify-center">
         <div
           className={`flex h-16 w-16 items-center justify-center overflow-hidden rounded-full text-3xl shadow-sm transition-transform duration-200 ease-out ${
             option
-              ? `${placeholderColor(option.name)} group-hover:scale-[1.8]`
+              ? `${placeholderColor(option.name)} group-hover:scale-[1.8] ${
+                  isExpanded ? "scale-[1.8]" : ""
+                }`
               : ""
           }`}
         >

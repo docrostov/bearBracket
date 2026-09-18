@@ -38,6 +38,11 @@ export default function BracketBoard({
   const [errorsByMatchupId, setErrorsByMatchupId] = useState(
     () => new Map<string, string>()
   );
+  // Only one matchup's photos expand at a time — several expanded together
+  // would overlap each other once scaled up.
+  const [expandedMatchupId, setExpandedMatchupId] = useState<string | null>(
+    null
+  );
   const [, startTransition] = useTransition();
 
   const contestantsById = new Map(contestants.map((c) => [c.id, c]));
@@ -99,7 +104,7 @@ export default function BracketBoard({
           <div className="flex flex-col gap-3">
             {matchups
               .filter((m) => m.round === round)
-              .map((matchup) => {
+              .map((matchup, i) => {
                 const [optionAId, optionBId] = resolveLegalOptions(
                   matchup,
                   matchupsByKey,
@@ -114,28 +119,81 @@ export default function BracketBoard({
                 const pickedId = picks.get(matchup.id) ?? null;
                 const error = errorsByMatchupId.get(matchup.id);
                 const isPending = pendingMatchupId === matchup.id;
+                const isExpanded = expandedMatchupId === matchup.id;
+                const canExpand = optionA !== null && optionB !== null;
 
                 return (
-                  <div key={matchup.id} className="flex flex-col gap-1">
-                    <div className="grid grid-cols-2 gap-2">
-                      {[optionA, optionB].map((option, i) => {
-                        const isPicked =
-                          option !== null && option.id === pickedId;
-                        const disabled = !canPick || option === null;
-
-                        return (
-                          <ContestantCard
-                            key={option?.id ?? `empty-${i}`}
-                            option={option}
-                            isPicked={isPicked}
-                            disabled={disabled}
-                            isPending={isPending}
-                            onSelect={() =>
-                              option && handlePick(matchup, option.id)
-                            }
+                  <div
+                    key={matchup.id}
+                    className={`flex flex-col gap-1 rounded-lg p-2 ${
+                      i % 2 === 0
+                        ? "bg-zinc-100 dark:bg-[#3b3b3b]"
+                        : "bg-white dark:bg-[#222222]"
+                    }`}
+                  >
+                    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+                      <ContestantCard
+                        option={optionA}
+                        isPicked={optionA !== null && optionA.id === pickedId}
+                        disabled={!canPick || optionA === null}
+                        isPending={isPending}
+                        isExpanded={isExpanded}
+                        onSelect={() =>
+                          optionA && handlePick(matchup, optionA.id)
+                        }
+                      />
+                      <button
+                        type="button"
+                        disabled={!canExpand}
+                        onClick={() =>
+                          setExpandedMatchupId((current) =>
+                            current === matchup.id ? null : matchup.id
+                          )
+                        }
+                        aria-label={
+                          isExpanded ? "Collapse photos" : "Expand photos"
+                        }
+                        aria-pressed={isExpanded}
+                        className={`flex h-7 w-7 items-center justify-center rounded-full border transition-colors disabled:opacity-30 ${
+                          isExpanded
+                            ? "border-zinc-950 bg-zinc-950 text-white dark:border-zinc-50 dark:bg-zinc-50 dark:text-zinc-950"
+                            : "border-zinc-300 text-zinc-500 enabled:hover:border-zinc-500 enabled:hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:enabled:hover:border-zinc-500 dark:enabled:hover:text-zinc-200"
+                        }`}
+                      >
+                        <svg
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          className="h-4 w-4"
+                          aria-hidden
+                        >
+                          <circle
+                            cx="8.5"
+                            cy="8.5"
+                            r="5.5"
+                            stroke="currentColor"
+                            strokeWidth="1.6"
                           />
-                        );
-                      })}
+                          <line
+                            x1="13"
+                            y1="13"
+                            x2="17.5"
+                            y2="17.5"
+                            stroke="currentColor"
+                            strokeWidth="1.6"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                      </button>
+                      <ContestantCard
+                        option={optionB}
+                        isPicked={optionB !== null && optionB.id === pickedId}
+                        disabled={!canPick || optionB === null}
+                        isPending={isPending}
+                        isExpanded={isExpanded}
+                        onSelect={() =>
+                          optionB && handlePick(matchup, optionB.id)
+                        }
+                      />
                     </div>
                     {error && (
                       <p className="text-xs text-red-600 dark:text-red-400">
