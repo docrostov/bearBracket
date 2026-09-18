@@ -7,12 +7,7 @@ import {
   type MatchupLite,
 } from "@/lib/bracket";
 import { submitPick } from "@/app/competitions/[slug]/actions";
-
-interface ContestantOption {
-  id: string;
-  name: string;
-  seed: number | null;
-}
+import ContestantCard, { type ContestantOption } from "@/components/ContestantCard";
 
 interface BracketBoardProps {
   competitionSlug: string;
@@ -122,36 +117,23 @@ export default function BracketBoard({
 
                 return (
                   <div key={matchup.id} className="flex flex-col gap-1">
-                    <div className="flex overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-800">
+                    <div className="grid grid-cols-2 gap-2">
                       {[optionA, optionB].map((option, i) => {
                         const isPicked =
                           option !== null && option.id === pickedId;
                         const disabled = !canPick || option === null;
 
                         return (
-                          <button
+                          <ContestantCard
                             key={option?.id ?? `empty-${i}`}
-                            type="button"
+                            option={option}
+                            isPicked={isPicked}
                             disabled={disabled}
-                            onClick={() => option && handlePick(matchup, option.id)}
-                            className={`flex-1 px-4 py-3 text-left text-sm transition-colors ${
-                              i === 0
-                                ? "border-r border-zinc-200 dark:border-zinc-800"
-                                : ""
-                            } ${
-                              isPicked
-                                ? "bg-foreground text-background font-medium"
-                                : "bg-white text-zinc-700 hover:enabled:bg-zinc-100 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:enabled:bg-zinc-900"
-                            } ${
-                              option === null
-                                ? "italic text-zinc-400 dark:text-zinc-600"
-                                : ""
-                            } ${isPending ? "opacity-70" : ""}`}
-                          >
-                            {option
-                              ? `${option.seed ? `#${option.seed} ` : ""}${option.name}`
-                              : "TBD"}
-                          </button>
+                            isPending={isPending}
+                            onSelect={() =>
+                              option && handlePick(matchup, option.id)
+                            }
+                          />
                         );
                       })}
                     </div>

@@ -53,7 +53,7 @@ export default async function CompetitionPage(
       .order("slot_in_round"),
     supabase
       .from("contestants")
-      .select("id, name, seed")
+      .select("id, name, seed, image_url")
       .eq("competition_id", competition.id),
   ]);
 
