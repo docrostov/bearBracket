@@ -10,7 +10,7 @@
 --
 -- Run in the Supabase SQL Editor. Safe to re-run (deletes 'test-bracket' first).
 
-delete from public.competitions where slug = 'test-bracket';
+delete from public.competitions where slug in ('test-bracket', 'fat-bear-week-2025');
 
 with new_competition as (
   insert into public.competitions (slug, name, year, bracket_size, status)
@@ -25,18 +25,18 @@ new_contestants as (
     c.image_url
   from new_competition,
     (values
-      ('128 Jr.', null),
-      ('609', null),
-      ('602', null),
-      ('503', null),
-      ('901', null),
+      ('128 Jr.', 'https://media.explore.org/documents/128yearling-1758059452387.png'),
+      ('609', 'https://media.explore.org/documents/609-1758737454490.png'),
+      ('602', 'https://media.explore.org/documents/602-1758562266438.png'),
+      ('503', 'https://media.explore.org/documents/503-1758560839893.png'),
+      ('901', 'https://media.explore.org/documents/901-1758562371329.png'),
       ('32 Chunk', 'https://media.explore.org/documents/32chunk-1758560671158.png'),
       ('26', 'https://media.explore.org/documents/26-1758557305581.png'),
-      ('909', null),
-      ('128 Grazer', null),
-      ('99', null),
-      ('856', null),
-      ('910', null)
+      ('909', 'https://media.explore.org/documents/909-1758562402990.png'),
+      ('128 Grazer', 'https://media.explore.org/documents/128grazer-1758560774361.png'),
+      ('99', 'https://media.explore.org/documents/99-1758560720167.png'),
+      ('856', 'https://media.explore.org/documents/856-1758562333630.png'),
+      ('910', 'https://media.explore.org/documents/910-1758562455268.png')
     ) as c(name, image_url)
   returning id, name
 ),
