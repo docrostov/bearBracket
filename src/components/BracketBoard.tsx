@@ -203,8 +203,13 @@ export default function BracketBoard({
                       key={matchup.id}
                       className={`flex flex-col gap-2 rounded-lg p-2 ${rowBg}`}
                     >
-                      <div className="flex items-center gap-3">
-                        <p className="flex-1 text-center text-sm text-zinc-700 dark:text-zinc-300">
+                      {/* A spacer matching the button's width on the left
+                          balances it, so the text centers on the full row
+                          width (matching the photo below) instead of just
+                          the space left of the button. */}
+                      <div className="grid grid-cols-[1.75rem_1fr_1.75rem] items-center gap-3">
+                        <div aria-hidden />
+                        <p className="text-center text-sm text-zinc-700 dark:text-zinc-300">
                           <span className="font-medium text-zinc-950 dark:text-zinc-50">
                             {byeOption?.name}
                           </span>{" "}
