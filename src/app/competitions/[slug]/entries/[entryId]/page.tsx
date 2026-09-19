@@ -133,7 +133,7 @@ export default async function EntryPage(
                     return (
                       <p
                         key={matchup.id}
-                        className="rounded-md border border-border px-3 py-2 text-center text-sm text-ink-soft"
+                        className="rounded-md border border-border-strong bg-surface px-3 py-2 text-center text-sm text-ink-soft"
                       >
                         <span className="font-medium text-ink">
                           {byeOption?.name}
@@ -155,11 +155,16 @@ export default async function EntryPage(
                     ? (contestantsById.get(optionBId) ?? null)
                     : null;
                   const pickedId = entryPicks.get(matchup.id) ?? null;
+                  const isDecided = matchup.winner_id !== null;
 
                   return (
                     <div
                       key={matchup.id}
-                      className="grid grid-cols-2 gap-2 rounded-md border border-border p-2"
+                      className={`grid grid-cols-2 gap-2 rounded-md border p-2 ${
+                        isDecided
+                          ? "border-border-strong bg-surface"
+                          : "border-border bg-cream"
+                      }`}
                     >
                       <PickCell
                         option={optionA}
@@ -192,11 +197,15 @@ function PickCell({
   winnerId: string | null;
 }) {
   const isPicked = option !== null && option.id === pickedId;
-  const marker =
-    isPicked && winnerId ? (option!.id === winnerId ? "✓" : "✗") : null;
+  const isResolved = isPicked && winnerId !== null;
+  const isCorrect = isResolved && option!.id === winnerId;
 
   return (
-    <div className="flex items-center justify-center gap-2 px-2 py-1.5 text-sm">
+    <div
+      className={`flex items-center justify-center gap-2 rounded px-2 py-1.5 text-sm ${
+        isResolved ? (isCorrect ? "bg-success-bg" : "bg-danger-bg") : ""
+      }`}
+    >
       <span
         className={
           isPicked
@@ -208,9 +217,13 @@ function PickCell({
       >
         {option ? `${option.seed ? `#${option.seed} ` : ""}${option.name}` : "TBD"}
       </span>
-      {marker && (
-        <span className={marker === "✓" ? "text-success" : "text-danger"}>
-          {marker}
+      {isResolved && (
+        <span
+          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold text-paper ${
+            isCorrect ? "bg-success" : "bg-danger"
+          }`}
+        >
+          {isCorrect ? "✓" : "✗"}
         </span>
       )}
     </div>
