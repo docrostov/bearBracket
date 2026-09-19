@@ -1,41 +1,71 @@
+import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function Home() {
+export default async function SplashPage() {
   const supabase = await createClient();
-  const { data: competitions } = await supabase
-    .from("competitions")
-    .select("id, slug, name, year, status")
-    .order("year", { ascending: false });
+
+  const [{ data: claims }, { data: competition }] = await Promise.all([
+    supabase.auth.getClaims(),
+    supabase
+      .from("competitions")
+      .select("slug, name")
+      .order("year", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+  ]);
+
+  const userId = claims?.claims.sub;
+  const slug = competition?.slug;
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-6 py-12">
-      <h1 className="font-heading text-2xl font-bold text-ink">
-        Competitions
-      </h1>
+    <main className="flex flex-1 items-center justify-center px-4 py-12">
+      <div className="flex w-full max-w-lg flex-col items-center gap-6 rounded-2xl border border-border-strong bg-surface p-8 text-center shadow-sm sm:p-12">
+        <Image
+          src="/bearbracket-logo.png"
+          alt="bearBracket"
+          width={480}
+          height={155}
+          className="h-auto w-full max-w-sm"
+          priority
+        />
 
-      {!competitions || competitions.length === 0 ? (
+        {/* TODO(Aaron): replace with your own welcome note. */}
         <p className="text-sm text-ink-soft">
-          No competitions yet. Sign in to see anything here once one&apos;s
-          been added.
+          Build your bracket, track how it holds up against the real thing,
+          and see how you stack up against everyone else picking along with
+          you.
         </p>
-      ) : (
-        <ul className="flex flex-col gap-3">
-          {competitions.map((competition) => (
-            <li key={competition.id}>
+
+        <div className="flex w-full flex-col gap-3 pt-2">
+          {slug && (
+            <>
               <Link
-                href={`/competitions/${competition.slug}`}
-                className="block rounded-md border border-border bg-surface px-4 py-3 transition-colors hover:border-border-strong"
+                href={userId ? `/competitions/${slug}/bracket` : "/login"}
+                className="rounded-full bg-ink px-5 py-3 text-sm font-medium text-paper transition-colors hover:opacity-90"
               >
-                <p className="font-medium text-ink">{competition.name}</p>
-                <p className="text-sm text-ink-soft">
-                  {competition.year} &middot; {competition.status}
-                </p>
+                {userId ? "My Bracket" : "Sign in to get started"}
               </Link>
-            </li>
-          ))}
-        </ul>
-      )}
+              <div className="flex justify-center gap-4 text-sm font-medium text-ink-soft">
+                <Link href={`/competitions/${slug}/results`} className="hover:text-ink">
+                  Results
+                </Link>
+                <Link href={`/competitions/${slug}/leaderboard`} className="hover:text-ink">
+                  Leaderboard
+                </Link>
+                <Link href="/about" className="hover:text-ink">
+                  About
+                </Link>
+              </div>
+            </>
+          )}
+          {!slug && (
+            <Link href="/about" className="text-sm font-medium text-ink-soft hover:text-ink">
+              About
+            </Link>
+          )}
+        </div>
+      </div>
     </main>
   );
 }

@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
 import { Geist, Baloo_2 } from "next/font/google";
-import AuthStatus from "@/components/AuthStatus";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,24 +24,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${baloo.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">
-        <header className="flex items-center justify-between border-b border-border-strong bg-header px-6 py-4">
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/transbearant.png"
-              alt=""
-              width={36}
-              height={36}
-              className="h-9 w-9 object-contain"
-            />
-            <span className="font-heading text-lg font-bold text-ink">
-              bearBracket
-            </span>
-          </Link>
-          <AuthStatus />
-        </header>
-        <div className="flex flex-1 flex-col">{children}</div>
-      </body>
+      <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );
 }

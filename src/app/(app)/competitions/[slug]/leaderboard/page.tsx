@@ -20,19 +20,6 @@ export default async function LeaderboardPage(
     .single();
 
   if (!competition) {
-    if (!userId) {
-      return (
-        <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 px-6 py-12">
-          <BackLink slug={slug} />
-          <p className="rounded-md border border-border bg-surface px-4 py-3 text-sm text-ink-soft">
-            <Link href="/login" className="font-medium underline">
-              Sign in
-            </Link>{" "}
-            to view this leaderboard.
-          </p>
-        </main>
-      );
-    }
     notFound();
   }
 
@@ -121,12 +108,9 @@ export default async function LeaderboardPage(
         </h1>
       </div>
 
-      {!userId && (
+      {!userId && competition.status === "open" && (
         <p className="rounded-md border border-border bg-surface px-4 py-3 text-sm text-ink-soft">
-          <Link href="/login" className="font-medium underline">
-            Sign in
-          </Link>{" "}
-          to view the leaderboard.
+          The leaderboard isn&apos;t available until this competition locks.
         </p>
       )}
 
@@ -137,11 +121,11 @@ export default async function LeaderboardPage(
         </p>
       )}
 
-      {userId && rows.length === 0 && (
+      {rows.length === 0 && !(competition.status === "open" && !userId) && (
         <p className="text-sm text-ink-soft">No entries yet.</p>
       )}
 
-      {userId && rows.length > 0 && (
+      {rows.length > 0 && (
         <ol className="flex flex-col gap-2">
           {rows.map((row, i) => (
             <li key={row.entryId}>
@@ -186,7 +170,7 @@ export default async function LeaderboardPage(
 function BackLink({ slug }: { slug: string }) {
   return (
     <Link
-      href={`/competitions/${slug}`}
+      href={`/competitions/${slug}/bracket`}
       className="text-sm text-muted hover:text-ink"
     >
       &larr; Back to bracket

@@ -3,16 +3,12 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import BracketBoard from "@/components/BracketBoard";
 
-export default async function CompetitionPage(
-  props: PageProps<"/competitions/[slug]">
+export default async function MyBracketPage(
+  props: PageProps<"/competitions/[slug]/bracket">
 ) {
   const { slug } = await props.params;
   const supabase = await createClient();
 
-  // RLS hides competitions entirely from signed-out requests, so a missing
-  // row here is ambiguous: either the slug is genuinely wrong, or it exists
-  // but this visitor isn't signed in to see it. Check auth first so we can
-  // tell those apart instead of showing a flat 404 to a signed-out visitor.
   const { data: claims } = await supabase.auth.getClaims();
   const userId = claims?.claims.sub;
 
@@ -23,21 +19,6 @@ export default async function CompetitionPage(
     .single();
 
   if (!competition) {
-    if (!userId) {
-      return (
-        <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 px-6 py-12">
-          <Link href="/" className="text-sm text-muted hover:text-ink">
-            &larr; All competitions
-          </Link>
-          <p className="rounded-md border border-border bg-surface px-4 py-3 text-sm text-ink-soft">
-            <Link href="/login" className="font-medium underline">
-              Sign in
-            </Link>{" "}
-            to view this competition.
-          </p>
-        </main>
-      );
-    }
     notFound();
   }
 
@@ -81,20 +62,9 @@ export default async function CompetitionPage(
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 px-6 py-12">
       <div className="flex flex-col gap-1">
-        <Link href="/" className="text-sm text-muted hover:text-ink">
-          &larr; All competitions
-        </Link>
-        <div className="flex items-baseline justify-between gap-3">
-          <h1 className="font-heading text-2xl font-bold text-ink">
-            {competition.name}
-          </h1>
-          <Link
-            href={`/competitions/${competition.slug}/leaderboard`}
-            className="shrink-0 text-sm text-muted underline hover:text-ink"
-          >
-            Leaderboard
-          </Link>
-        </div>
+        <h1 className="font-heading text-2xl font-bold text-ink">
+          {competition.name}
+        </h1>
         <p className="text-sm text-ink-soft">
           {competition.year} &middot; {competition.status}
         </p>

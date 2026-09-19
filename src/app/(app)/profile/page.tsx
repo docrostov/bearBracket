@@ -30,7 +30,7 @@ export default async function ProfilePage() {
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col gap-6 px-6 py-12">
       <div className="flex flex-col gap-1">
         <Link href="/" className="text-sm text-muted hover:text-ink">
-          &larr; All competitions
+          &larr; Home
         </Link>
         <h1 className="font-heading text-2xl font-bold text-ink">
           Your profile

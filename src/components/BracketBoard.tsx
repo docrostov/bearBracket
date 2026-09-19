@@ -7,7 +7,7 @@ import {
   resolveLegalOptions,
   type MatchupLite,
 } from "@/lib/bracket";
-import { clearPicks, submitPick } from "@/app/competitions/[slug]/actions";
+import { clearPicks, submitPick } from "@/app/(app)/competitions/[slug]/actions";
 import ContestantCard, { type ContestantOption } from "@/components/ContestantCard";
 
 interface BracketBoardProps {

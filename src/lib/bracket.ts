@@ -80,13 +80,18 @@ export function resolveLegalOptions(
 }
 
 /** The contestant who actually won this matchup in real life: automatic for a bye, otherwise the official result (null until decided). */
-function realWinner(matchup: MatchupLite): string | null {
+export function realWinner(matchup: MatchupLite): string | null {
   if (isBye(matchup)) return byeContestantId(matchup);
   return matchup.winner_id;
 }
 
-/** Same shape as resolveLegalOptions, but tracing official results instead of any one entry's picks — used to figure out who's actually still alive. */
-function realOccupants(
+/**
+ * Same shape as resolveLegalOptions, but tracing official results instead of
+ * any one entry's picks — who's actually confirmed to be playing in this
+ * matchup, independent of what anyone predicted. Used both to figure out
+ * who's still mathematically alive, and to render the official results page.
+ */
+export function officialOccupants(
   matchup: MatchupLite,
   matchupsByKey: Map<string, MatchupLite>
 ): [string | null, string | null] {
@@ -124,7 +129,7 @@ export function computeEliminatedContestants(
 
   for (const matchup of matchups) {
     if (isBye(matchup) || matchup.winner_id === null) continue;
-    const [a, b] = realOccupants(matchup, matchupsByKey);
+    const [a, b] = officialOccupants(matchup, matchupsByKey);
     for (const occupant of [a, b]) {
       if (occupant !== null && occupant !== matchup.winner_id) {
         eliminated.add(occupant);

@@ -2,7 +2,7 @@
 
 import { useState, useTransition, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { updateProfile } from "@/app/profile/actions";
+import { updateProfile } from "@/app/(app)/profile/actions";
 import EmojiPicker from "./EmojiPicker";
 
 export default function ProfileForm({
