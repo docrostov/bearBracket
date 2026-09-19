@@ -26,9 +26,12 @@ export default async function AuthStatus() {
 
   return (
     <div className="flex items-center gap-3">
-      <span className="text-sm text-zinc-700 dark:text-zinc-300">
+      <Link
+        href="/profile"
+        className="text-sm text-zinc-700 hover:text-zinc-950 dark:text-zinc-300 dark:hover:text-zinc-50"
+      >
         {profile?.display_name ?? "Bear fan"}
-      </span>
+      </Link>
       <SignOutButton />
     </div>
   );
