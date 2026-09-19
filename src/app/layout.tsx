@@ -27,8 +27,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${baloo.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-cream">
-        <header className="flex items-center justify-between border-b border-border px-6 py-4">
+      <body className="flex min-h-full flex-col">
+        <header className="flex items-center justify-between border-b border-border-strong bg-header px-6 py-4">
           <Link href="/" className="flex items-center gap-2">
             <Image
               src="/transbearant.png"
