@@ -34,7 +34,7 @@ export default async function EntryPage(
       return (
         <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 px-6 py-12">
           <BackLink slug={slug} />
-          <p className="rounded-md border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300">
+          <p className="rounded-md border border-border bg-surface px-4 py-3 text-sm text-ink-soft">
             <Link href="/login" className="font-medium underline">
               Sign in
             </Link>{" "}
@@ -60,7 +60,7 @@ export default async function EntryPage(
     return (
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 px-6 py-12">
         <BackLink slug={slug} />
-        <p className="rounded-md border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300">
+        <p className="rounded-md border border-border bg-surface px-4 py-3 text-sm text-ink-soft">
           This bracket isn&apos;t available — either the link is wrong, or
           it isn&apos;t visible until the competition locks.
         </p>
@@ -109,18 +109,16 @@ export default async function EntryPage(
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 px-6 py-12">
       <div className="flex flex-col gap-1">
         <BackLink slug={slug} />
-        <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+        <h1 className="font-heading text-2xl font-bold text-ink">
           {profile?.display_name ?? "Bear fan"}&apos;s bracket
         </h1>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          {competition.name}
-        </p>
+        <p className="text-sm text-ink-soft">{competition.name}</p>
       </div>
 
       <div className="flex flex-col gap-8">
         {rounds.map((round) => (
           <section key={round} className="flex flex-col gap-2">
-            <h2 className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+            <h2 className="text-xs font-medium uppercase tracking-wide text-muted">
               Round {round}
             </h2>
             <div className="flex flex-col gap-2">
@@ -135,9 +133,9 @@ export default async function EntryPage(
                     return (
                       <p
                         key={matchup.id}
-                        className="rounded-md border border-zinc-200 px-3 py-2 text-center text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400"
+                        className="rounded-md border border-border px-3 py-2 text-center text-sm text-ink-soft"
                       >
-                        <span className="font-medium text-zinc-950 dark:text-zinc-50">
+                        <span className="font-medium text-ink">
                           {byeOption?.name}
                         </span>{" "}
                         received a first-round bye.
@@ -161,7 +159,7 @@ export default async function EntryPage(
                   return (
                     <div
                       key={matchup.id}
-                      className="grid grid-cols-2 gap-2 rounded-md border border-zinc-200 p-2 dark:border-zinc-800"
+                      className="grid grid-cols-2 gap-2 rounded-md border border-border p-2"
                     >
                       <PickCell
                         option={optionA}
@@ -202,22 +200,16 @@ function PickCell({
       <span
         className={
           isPicked
-            ? "font-medium text-zinc-950 dark:text-zinc-50"
+            ? "font-medium text-ink"
             : option
-              ? "text-zinc-500 dark:text-zinc-500"
-              : "italic text-zinc-400 dark:text-zinc-600"
+              ? "text-ink-soft"
+              : "italic text-muted"
         }
       >
         {option ? `${option.seed ? `#${option.seed} ` : ""}${option.name}` : "TBD"}
       </span>
       {marker && (
-        <span
-          className={
-            marker === "✓"
-              ? "text-emerald-600 dark:text-emerald-400"
-              : "text-red-600 dark:text-red-400"
-          }
-        >
+        <span className={marker === "✓" ? "text-success" : "text-danger"}>
           {marker}
         </span>
       )}
@@ -229,7 +221,7 @@ function BackLink({ slug }: { slug: string }) {
   return (
     <Link
       href={`/competitions/${slug}/leaderboard`}
-      className="text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
+      className="text-sm text-muted hover:text-ink"
     >
       &larr; Back to leaderboard
     </Link>

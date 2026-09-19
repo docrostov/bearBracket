@@ -10,12 +10,12 @@ export default async function Home() {
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-6 py-12">
-      <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+      <h1 className="font-heading text-2xl font-bold text-ink">
         Competitions
       </h1>
 
       {!competitions || competitions.length === 0 ? (
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm text-ink-soft">
           No competitions yet. Sign in to see anything here once one&apos;s
           been added.
         </p>
@@ -25,12 +25,10 @@ export default async function Home() {
             <li key={competition.id}>
               <Link
                 href={`/competitions/${competition.slug}`}
-                className="block rounded-md border border-zinc-200 bg-white px-4 py-3 transition-colors hover:border-zinc-300 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-zinc-700"
+                className="block rounded-md border border-border bg-surface px-4 py-3 transition-colors hover:border-border-strong"
               >
-                <p className="font-medium text-zinc-950 dark:text-zinc-50">
-                  {competition.name}
-                </p>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                <p className="font-medium text-ink">{competition.name}</p>
+                <p className="text-sm text-ink-soft">
                   {competition.year} &middot; {competition.status}
                 </p>
               </Link>

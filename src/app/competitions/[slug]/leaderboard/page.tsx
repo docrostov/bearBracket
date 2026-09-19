@@ -24,7 +24,7 @@ export default async function LeaderboardPage(
       return (
         <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 px-6 py-12">
           <BackLink slug={slug} />
-          <p className="rounded-md border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300">
+          <p className="rounded-md border border-border bg-surface px-4 py-3 text-sm text-ink-soft">
             <Link href="/login" className="font-medium underline">
               Sign in
             </Link>{" "}
@@ -108,13 +108,13 @@ export default async function LeaderboardPage(
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-6 py-12">
       <div className="flex flex-col gap-1">
         <BackLink slug={slug} />
-        <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+        <h1 className="font-heading text-2xl font-bold text-ink">
           {competition.name} — Leaderboard
         </h1>
       </div>
 
       {!userId && (
-        <p className="rounded-md border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300">
+        <p className="rounded-md border border-border bg-surface px-4 py-3 text-sm text-ink-soft">
           <Link href="/login" className="font-medium underline">
             Sign in
           </Link>{" "}
@@ -123,16 +123,14 @@ export default async function LeaderboardPage(
       )}
 
       {userId && competition.status === "open" && (
-        <p className="rounded-md border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300">
+        <p className="rounded-md border border-border bg-surface px-4 py-3 text-sm text-ink-soft">
           Everyone&apos;s picks stay private until this competition locks —
           you can only see your own entry here for now.
         </p>
       )}
 
       {userId && rows.length === 0 && (
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          No entries yet.
-        </p>
+        <p className="text-sm text-ink-soft">No entries yet.</p>
       )}
 
       {userId && rows.length > 0 && (
@@ -141,16 +139,16 @@ export default async function LeaderboardPage(
             <li key={row.entryId}>
               <Link
                 href={`/competitions/${slug}/entries/${row.entryId}`}
-                className="flex items-center justify-between gap-3 rounded-md border border-zinc-200 bg-white px-4 py-3 transition-colors hover:border-zinc-300 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-zinc-700"
+                className="flex items-center justify-between gap-3 rounded-md border border-border bg-surface px-4 py-3 transition-colors hover:border-border-strong"
               >
                 <span className="flex items-center gap-3">
-                  <span className="w-6 text-sm text-zinc-500">{i + 1}</span>
-                  <span className="font-medium text-zinc-950 dark:text-zinc-50">
+                  <span className="w-6 text-sm text-muted">{i + 1}</span>
+                  <span className="font-medium text-ink">
                     {row.emoji && <span className="mr-1">{row.emoji}</span>}
                     {row.displayName}
                   </span>
                 </span>
-                <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                <span className="text-sm text-ink-soft">
                   {row.score} pts
                   {row.scorableCount > 0 && (
                     <>
@@ -172,7 +170,7 @@ function BackLink({ slug }: { slug: string }) {
   return (
     <Link
       href={`/competitions/${slug}`}
-      className="text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
+      className="text-sm text-muted hover:text-ink"
     >
       &larr; Back to bracket
     </Link>

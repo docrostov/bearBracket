@@ -138,7 +138,7 @@ export default function BracketBoard({
       {canPick && pickableMatchups.length > 0 && (
         <div className="flex flex-col gap-1">
           <div className="flex items-center justify-between gap-3">
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="text-sm text-ink-soft">
               {isComplete
                 ? "All picks made."
                 : `${pickedCount} of ${pickableMatchups.length} picks made — ${remainingCount} left.`}
@@ -148,16 +148,14 @@ export default function BracketBoard({
                 type="button"
                 onClick={handleClearPicks}
                 disabled={isClearing}
-                className="shrink-0 text-xs text-zinc-500 underline decoration-dotted hover:text-zinc-800 disabled:opacity-50 dark:text-zinc-500 dark:hover:text-zinc-200"
+                className="shrink-0 text-xs text-muted underline decoration-dotted hover:text-ink disabled:opacity-50"
               >
                 {isClearing ? "Clearing…" : "Clear picks"}
               </button>
             )}
           </div>
           {clearError && (
-            <p className="text-xs text-red-600 dark:text-red-400">
-              {clearError}
-            </p>
+            <p className="text-xs text-danger">{clearError}</p>
           )}
         </div>
       )}
@@ -165,7 +163,7 @@ export default function BracketBoard({
       <div className="flex flex-col gap-10">
         {rounds.map((round) => (
         <section key={round} className="flex flex-col gap-3">
-          <h2 className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+          <h2 className="text-xs font-medium uppercase tracking-wide text-muted">
             Round {round}
           </h2>
           <div className="flex flex-col gap-3">
@@ -191,10 +189,7 @@ export default function BracketBoard({
                 // A bye has nothing to vote on — the lone contestant
                 // advances automatically, not by anyone picking them.
                 const matchupIsBye = isBye(matchup);
-                const rowBg =
-                  i % 2 === 0
-                    ? "bg-zinc-100 dark:bg-[#141414]"
-                    : "bg-white dark:bg-[#222222]";
+                const rowBg = i % 2 === 0 ? "bg-surface-alt" : "bg-surface";
 
                 if (matchupIsBye) {
                   const byeOption = optionA ?? optionB;
@@ -209,8 +204,8 @@ export default function BracketBoard({
                           the space left of the button. */}
                       <div className="grid grid-cols-[1.75rem_1fr_1.75rem] items-center gap-3">
                         <div aria-hidden />
-                        <p className="text-center text-sm text-zinc-700 dark:text-zinc-300">
-                          <span className="font-medium text-zinc-950 dark:text-zinc-50">
+                        <p className="text-center text-sm text-ink-soft">
+                          <span className="font-medium text-ink">
                             {byeOption?.name}
                           </span>{" "}
                           received a first-round bye.
@@ -228,8 +223,8 @@ export default function BracketBoard({
                           aria-pressed={isExpanded}
                           className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-colors ${
                             isExpanded
-                              ? "border-zinc-950 bg-zinc-950 text-white dark:border-zinc-50 dark:bg-zinc-50 dark:text-zinc-950"
-                              : "border-zinc-300 text-zinc-500 hover:border-zinc-500 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:text-zinc-200"
+                              ? "border-ink bg-ink text-paper"
+                              : "border-border text-muted hover:border-border-strong hover:text-ink"
                           }`}
                         >
                           <svg
@@ -292,8 +287,8 @@ export default function BracketBoard({
                         aria-pressed={isExpanded}
                         className={`flex h-7 w-7 items-center justify-center rounded-full border transition-colors disabled:opacity-30 ${
                           isExpanded
-                            ? "border-zinc-950 bg-zinc-950 text-white dark:border-zinc-50 dark:bg-zinc-50 dark:text-zinc-950"
-                            : "border-zinc-300 text-zinc-500 enabled:hover:border-zinc-500 enabled:hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:enabled:hover:border-zinc-500 dark:enabled:hover:text-zinc-200"
+                            ? "border-ink bg-ink text-paper"
+                            : "border-border text-muted enabled:hover:border-border-strong enabled:hover:text-ink"
                         }`}
                       >
                         <svg
@@ -351,9 +346,7 @@ export default function BracketBoard({
                       />
                     </div>
                     {error && (
-                      <p className="text-xs text-red-600 dark:text-red-400">
-                        {error}
-                      </p>
+                      <p className="text-xs text-danger">{error}</p>
                     )}
                   </div>
                 );
@@ -367,8 +360,8 @@ export default function BracketBoard({
         <div
           className={`rounded-lg border p-4 text-sm ${
             isComplete
-              ? "border-emerald-600/40 bg-emerald-50 text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-950/40 dark:text-emerald-300"
-              : "border-zinc-200 bg-zinc-50 text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300"
+              ? "border-success/40 bg-success-bg text-success"
+              : "border-border bg-surface text-ink-soft"
           }`}
         >
           {isComplete

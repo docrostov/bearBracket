@@ -10,7 +10,7 @@ export default async function ProfilePage() {
   if (!userId) {
     return (
       <main className="mx-auto flex w-full max-w-sm flex-1 flex-col gap-4 px-6 py-12">
-        <p className="rounded-md border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300">
+        <p className="rounded-md border border-border bg-surface px-4 py-3 text-sm text-ink-soft">
           <Link href="/login" className="font-medium underline">
             Sign in
           </Link>{" "}
@@ -29,13 +29,10 @@ export default async function ProfilePage() {
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col gap-6 px-6 py-12">
       <div className="flex flex-col gap-1">
-        <Link
-          href="/"
-          className="text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
-        >
+        <Link href="/" className="text-sm text-muted hover:text-ink">
           &larr; All competitions
         </Link>
-        <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+        <h1 className="font-heading text-2xl font-bold text-ink">
           Your profile
         </h1>
       </div>

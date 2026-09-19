@@ -25,17 +25,15 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex flex-1 items-center justify-center bg-zinc-50 px-4 dark:bg-black">
+    <div className="flex flex-1 items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
-          Sign in
-        </h1>
-        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+        <h1 className="font-heading text-2xl font-bold text-ink">Sign in</h1>
+        <p className="mt-2 text-sm text-ink-soft">
           No password needed &mdash; we&apos;ll email you a sign-in link.
         </p>
 
         {status === "sent" ? (
-          <p className="mt-6 rounded-md border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300">
+          <p className="mt-6 rounded-md border border-border bg-surface px-4 py-3 text-sm text-ink-soft">
             Check {email} for a sign-in link.
           </p>
         ) : (
@@ -47,17 +45,17 @@ export default function LoginPage() {
               placeholder="you@example.com"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-950 outline-none focus:border-zinc-500 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50"
+              className="rounded-md border border-border bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-border-strong"
             />
             <button
               type="submit"
               disabled={status === "sending"}
-              className="rounded-full bg-foreground px-5 py-2 text-sm font-medium text-background transition-colors hover:bg-[#383838] disabled:opacity-50 dark:hover:bg-[#ccc]"
+              className="rounded-full bg-ink px-5 py-2 text-sm font-medium text-paper transition-colors hover:opacity-90 disabled:opacity-50"
             >
               {status === "sending" ? "Sending…" : "Send sign-in link"}
             </button>
             {status === "error" && (
-              <p className="text-sm text-red-600 dark:text-red-400">
+              <p className="text-sm text-danger">
                 Something went wrong sending that link. Try again.
               </p>
             )}

@@ -11,7 +11,7 @@ export default async function AuthStatus() {
     return (
       <Link
         href="/login"
-        className="text-sm font-medium text-zinc-600 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-zinc-50"
+        className="text-sm font-medium text-ink-soft hover:text-ink"
       >
         Sign in
       </Link>
@@ -28,7 +28,7 @@ export default async function AuthStatus() {
     <div className="flex items-center gap-3">
       <Link
         href="/profile"
-        className="text-sm text-zinc-700 hover:text-zinc-950 dark:text-zinc-300 dark:hover:text-zinc-50"
+        className="text-sm text-ink-soft hover:text-ink"
       >
         {profile?.emoji && <span className="mr-1">{profile.emoji}</span>}
         {profile?.display_name ?? "Bear fan"}

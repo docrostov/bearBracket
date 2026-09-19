@@ -7,16 +7,16 @@ export interface ContestantOption {
   image_url: string | null;
 }
 
-// A handful of background colors to tell placeholder bears apart at a
-// glance until real photos exist, picked deterministically from the name so
-// the same bear always gets the same color.
+// A handful of muted, earthy background colors to tell placeholder bears
+// apart at a glance until real photos exist, picked deterministically from
+// the name so the same bear always gets the same color.
 const PLACEHOLDER_COLORS = [
-  "bg-amber-200 dark:bg-amber-900",
-  "bg-orange-200 dark:bg-orange-900",
-  "bg-rose-200 dark:bg-rose-900",
-  "bg-lime-200 dark:bg-lime-900",
-  "bg-teal-200 dark:bg-teal-900",
-  "bg-sky-200 dark:bg-sky-900",
+  "bg-[#e8c79a]",
+  "bg-[#e3b48d]",
+  "bg-[#d9a7a0]",
+  "bg-[#c6c08a]",
+  "bg-[#9fbfb0]",
+  "bg-[#a9bfc9]",
 ];
 
 function placeholderColor(seed: string): string {
@@ -48,9 +48,7 @@ export default function ContestantCard({
       disabled={disabled}
       onClick={onSelect}
       className={`group flex flex-col gap-1.5 rounded-md border p-1.5 transition-colors ${
-        isPicked
-          ? "border-zinc-950 dark:border-zinc-50"
-          : "border-zinc-200 dark:border-zinc-800"
+        isPicked ? "border-ink" : "border-border"
       } ${option === null ? "cursor-default" : ""} ${
         isPending ? "opacity-70" : ""
       }`}
@@ -58,7 +56,7 @@ export default function ContestantCard({
       {/* Official Fat Bear Week comparison photos run ~5:2 (two side-by-side
           shots baked into one image) — this ratio keeps them legible instead
           of cropping into a headshot-style circle. */}
-      <div className="aspect-[5/2] w-full overflow-hidden rounded bg-zinc-100 dark:bg-zinc-900">
+      <div className="aspect-[5/2] w-full overflow-hidden rounded bg-surface-alt">
         {option?.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -79,10 +77,10 @@ export default function ContestantCard({
       <span
         className={`text-sm ${
           isPicked
-            ? "font-medium text-zinc-950 dark:text-zinc-50"
+            ? "font-medium text-ink"
             : option
-              ? "text-zinc-700 dark:text-zinc-300"
-              : "italic text-zinc-400 dark:text-zinc-600"
+              ? "text-ink-soft"
+              : "italic text-muted"
         }`}
       >
         {option ? `${option.seed ? `#${option.seed} ` : ""}${option.name}` : emptyLabel}
