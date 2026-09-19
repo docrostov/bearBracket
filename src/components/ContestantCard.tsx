@@ -27,6 +27,8 @@ function placeholderColor(seed: string): string {
 interface ContestantCardProps {
   option: ContestantOption | null;
   isPicked: boolean;
+  /** Whether a pick exists for this matchup at all — used to dim the side that wasn't picked, so the actual pick reads clearly at a glance. */
+  hasPick: boolean;
   disabled: boolean;
   isPending: boolean;
   /** Shown in place of a name when option is null — "TBD" for an unresolved future round, "Bye" for a first-round bye. */
@@ -37,41 +39,53 @@ interface ContestantCardProps {
 export default function ContestantCard({
   option,
   isPicked,
+  hasPick,
   disabled,
   isPending,
   emptyLabel = "TBD",
   onSelect,
 }: ContestantCardProps) {
+  const isDimmed = hasPick && !isPicked;
+
   return (
     <button
       type="button"
       disabled={disabled}
       onClick={onSelect}
-      className={`group flex flex-col gap-1.5 rounded-md border p-1.5 transition-colors ${
-        isPicked ? "border-ink" : "border-border"
+      className={`group flex flex-col gap-1.5 rounded-md border p-1.5 transition-all ${
+        isPicked ? "border-[3px] border-ink" : "border-border"
       } ${option === null ? "cursor-default" : ""} ${
         isPending ? "opacity-70" : ""
-      }`}
+      } ${isDimmed ? "opacity-50" : ""}`}
     >
       {/* Official Fat Bear Week comparison photos run ~5:2 (two side-by-side
           shots baked into one image) — this ratio keeps them legible instead
           of cropping into a headshot-style circle. */}
-      <div className="aspect-[5/2] w-full overflow-hidden rounded bg-surface-alt">
+      <div className="relative aspect-[5/2] w-full overflow-hidden rounded bg-surface-alt">
         {option?.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={option.image_url}
             alt={option.name}
-            className="h-full w-full object-cover transition-transform duration-200 ease-out group-hover:scale-105"
+            className={`h-full w-full object-cover transition-all duration-200 ease-out group-hover:scale-105 ${
+              isDimmed ? "grayscale" : ""
+            }`}
           />
         ) : option ? (
           <div
-            className={`flex h-full w-full items-center justify-center text-3xl ${placeholderColor(option.name)}`}
+            className={`flex h-full w-full items-center justify-center text-3xl ${placeholderColor(option.name)} ${
+              isDimmed ? "grayscale" : ""
+            }`}
           >
             <span aria-hidden>🐻</span>
           </div>
         ) : (
           <div className="flex h-full w-full items-center justify-center" />
+        )}
+        {isPicked && (
+          <span className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-ink text-xs font-bold text-paper">
+            ✓
+          </span>
         )}
       </div>
       <span

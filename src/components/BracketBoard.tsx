@@ -257,6 +257,7 @@ export default function BracketBoard({
                           <ContestantCard
                             option={byeOption}
                             isPicked
+                            hasPick
                             disabled
                             isPending={false}
                             onSelect={() => {}}
@@ -329,6 +330,7 @@ export default function BracketBoard({
                       <ContestantCard
                         option={optionA}
                         isPicked={optionA !== null && optionA.id === pickedId}
+                        hasPick={pickedId !== null}
                         disabled={!canPick || optionA === null}
                         isPending={isPending}
                         onSelect={() =>
@@ -338,6 +340,7 @@ export default function BracketBoard({
                       <ContestantCard
                         option={optionB}
                         isPicked={optionB !== null && optionB.id === pickedId}
+                        hasPick={pickedId !== null}
                         disabled={!canPick || optionB === null}
                         isPending={isPending}
                         onSelect={() =>

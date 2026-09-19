@@ -21,14 +21,16 @@ export default async function SplashPage() {
   return (
     <main className="flex flex-1 items-center justify-center px-4 py-12">
       <div className="flex w-full max-w-lg flex-col items-center gap-6 rounded-2xl border border-border-strong bg-surface p-8 text-center shadow-sm sm:p-12">
-        <Image
-          src="/bearbracket-logo.png"
-          alt="bearBracket"
-          width={480}
-          height={155}
-          className="h-auto w-full max-w-sm"
-          priority
-        />
+        <div className="w-full max-w-sm overflow-hidden rounded-xl border border-border bg-cream">
+          <Image
+            src="/bearbracket-logo.png"
+            alt="bearBracket"
+            width={480}
+            height={155}
+            className="h-auto w-full"
+            priority
+          />
+        </div>
 
         {/* TODO(Aaron): replace with your own welcome note. */}
         <p className="text-sm text-ink-soft">

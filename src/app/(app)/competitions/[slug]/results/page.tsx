@@ -108,13 +108,14 @@ export default async function ResultsPage(
                   return (
                     <div
                       key={matchup.id}
-                      className={`grid grid-cols-2 gap-2 rounded-md border p-2 ${
+                      className={`grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-md border p-2 ${
                         isDecided
                           ? "border-border-strong bg-surface"
                           : "border-border bg-cream"
                       }`}
                     >
                       <ResultCell option={occupantA} winnerId={matchup.winner_id} />
+                      <span className="text-xs font-medium text-muted">vs</span>
                       <ResultCell option={occupantB} winnerId={matchup.winner_id} />
                     </div>
                   );
