@@ -20,7 +20,7 @@ export default async function AuthStatus() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("display_name")
+    .select("display_name, emoji")
     .eq("id", userId)
     .single();
 
@@ -30,6 +30,7 @@ export default async function AuthStatus() {
         href="/profile"
         className="text-sm text-zinc-700 hover:text-zinc-950 dark:text-zinc-300 dark:hover:text-zinc-50"
       >
+        {profile?.emoji && <span className="mr-1">{profile.emoji}</span>}
         {profile?.display_name ?? "Bear fan"}
       </Link>
       <SignOutButton />

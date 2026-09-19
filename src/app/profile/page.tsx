@@ -22,7 +22,7 @@ export default async function ProfilePage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("display_name")
+    .select("display_name, emoji")
     .eq("id", userId)
     .single();
 
@@ -39,7 +39,10 @@ export default async function ProfilePage() {
           Your profile
         </h1>
       </div>
-      <ProfileForm initialDisplayName={profile?.display_name ?? ""} />
+      <ProfileForm
+        initialDisplayName={profile?.display_name ?? ""}
+        initialEmoji={profile?.emoji ?? null}
+      />
     </main>
   );
 }

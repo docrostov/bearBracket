@@ -51,8 +51,13 @@ export default async function LeaderboardPage(
 
   const [{ data: profiles }, { data: picks }] = await Promise.all([
     userIds.length > 0
-      ? supabase.from("profiles").select("id, display_name").in("id", userIds)
-      : Promise.resolve({ data: [] as { id: string; display_name: string }[] }),
+      ? supabase
+          .from("profiles")
+          .select("id, display_name, emoji")
+          .in("id", userIds)
+      : Promise.resolve(
+          { data: [] as { id: string; display_name: string; emoji: string | null }[] }
+        ),
     entryIds.length > 0
       ? supabase
           .from("picks")
@@ -63,8 +68,8 @@ export default async function LeaderboardPage(
         ),
   ]);
 
-  const displayNameByUserId = new Map(
-    (profiles ?? []).map((p) => [p.id, p.display_name])
+  const profileByUserId = new Map(
+    (profiles ?? []).map((p) => [p.id, p])
   );
 
   const picksByEntryId = new Map<string, Map<string, string>>();
@@ -87,9 +92,11 @@ export default async function LeaderboardPage(
         entryPicks,
         competition.points_per_round
       );
+      const profile = profileByUserId.get(entry.user_id);
       return {
         entryId: entry.id,
-        displayName: displayNameByUserId.get(entry.user_id) ?? "Bear fan",
+        displayName: profile?.display_name ?? "Bear fan",
+        emoji: profile?.emoji ?? null,
         score,
         correctCount,
         scorableCount,
@@ -139,6 +146,7 @@ export default async function LeaderboardPage(
                 <span className="flex items-center gap-3">
                   <span className="w-6 text-sm text-zinc-500">{i + 1}</span>
                   <span className="font-medium text-zinc-950 dark:text-zinc-50">
+                    {row.emoji && <span className="mr-1">{row.emoji}</span>}
                     {row.displayName}
                   </span>
                 </span>
