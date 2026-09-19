@@ -202,8 +202,12 @@ function PickCell({
 
   return (
     <div
-      className={`flex items-center justify-center gap-2 rounded px-2 py-1.5 text-sm ${
-        isResolved ? (isCorrect ? "bg-success-bg" : "bg-danger-bg") : ""
+      className={`flex items-center justify-center gap-2 rounded-md px-2 py-1.5 text-sm ${
+        isResolved
+          ? isCorrect
+            ? "border border-[#c3d5b3] bg-success-bg"
+            : "border border-[#e0c0b3] bg-danger-bg"
+          : ""
       }`}
     >
       <span

@@ -78,3 +78,59 @@ export function resolveLegalOptions(
     matchupB ? effectiveWinner(matchupB, picksByMatchupId) : null,
   ];
 }
+
+/** The contestant who actually won this matchup in real life: automatic for a bye, otherwise the official result (null until decided). */
+function realWinner(matchup: MatchupLite): string | null {
+  if (isBye(matchup)) return byeContestantId(matchup);
+  return matchup.winner_id;
+}
+
+/** Same shape as resolveLegalOptions, but tracing official results instead of any one entry's picks — used to figure out who's actually still alive. */
+function realOccupants(
+  matchup: MatchupLite,
+  matchupsByKey: Map<string, MatchupLite>
+): [string | null, string | null] {
+  if (matchup.round === 1) {
+    return [matchup.contestant_a_id, matchup.contestant_b_id];
+  }
+
+  const feeders = feederSlots(matchup.round, matchup.slot_in_round);
+  if (!feeders) return [null, null];
+
+  const [slotA, slotB] = feeders;
+  const matchupA = matchupsByKey.get(matchupKey(matchup.round - 1, slotA));
+  const matchupB = matchupsByKey.get(matchupKey(matchup.round - 1, slotB));
+
+  return [
+    matchupA ? realWinner(matchupA) : null,
+    matchupB ? realWinner(matchupB) : null,
+  ];
+}
+
+/**
+ * Contestants eliminated by official results so far. In single elimination,
+ * losing anywhere rules a contestant out of every later slot too — used to
+ * tell whether an entry's still-undecided pick is still mathematically
+ * possible, independent of what that entry itself predicted for earlier
+ * rounds.
+ */
+export function computeEliminatedContestants(
+  matchups: MatchupLite[]
+): Set<string> {
+  const matchupsByKey = new Map(
+    matchups.map((m) => [matchupKey(m.round, m.slot_in_round), m])
+  );
+  const eliminated = new Set<string>();
+
+  for (const matchup of matchups) {
+    if (isBye(matchup) || matchup.winner_id === null) continue;
+    const [a, b] = realOccupants(matchup, matchupsByKey);
+    for (const occupant of [a, b]) {
+      if (occupant !== null && occupant !== matchup.winner_id) {
+        eliminated.add(occupant);
+      }
+    }
+  }
+
+  return eliminated;
+}

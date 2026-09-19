@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { scoreEntry } from "@/lib/scoring";
-import type { MatchupLite } from "@/lib/bracket";
+import { potentialRemainingPoints, scoreEntry } from "@/lib/scoring";
+import { computeEliminatedContestants, type MatchupLite } from "@/lib/bracket";
 
 export default async function LeaderboardPage(
   props: PageProps<"/competitions/[slug]/leaderboard">
@@ -83,6 +83,7 @@ export default async function LeaderboardPage(
   }
 
   const matchupsList: MatchupLite[] = matchups ?? [];
+  const eliminatedContestants = computeEliminatedContestants(matchupsList);
 
   const rows = (entries ?? [])
     .map((entry) => {
@@ -90,6 +91,12 @@ export default async function LeaderboardPage(
       const { score, correctCount, scorableCount } = scoreEntry(
         matchupsList,
         entryPicks,
+        competition.points_per_round
+      );
+      const potentialPoints = potentialRemainingPoints(
+        matchupsList,
+        entryPicks,
+        eliminatedContestants,
         competition.points_per_round
       );
       const profile = profileByUserId.get(entry.user_id);
@@ -100,6 +107,7 @@ export default async function LeaderboardPage(
         score,
         correctCount,
         scorableCount,
+        potentialPoints,
       };
     })
     .sort((a, b) => b.score - a.score || b.correctCount - a.correctCount);
@@ -149,7 +157,16 @@ export default async function LeaderboardPage(
                   </span>
                 </span>
                 <span className="text-sm text-ink-soft">
-                  {row.score} pts
+                  {row.potentialPoints > 0 ? (
+                    <span className="group relative cursor-help border-b border-dotted border-muted">
+                      {row.score} pts
+                      <span className="pointer-events-none absolute bottom-full right-0 z-10 mb-1 hidden w-max max-w-[200px] rounded-md bg-ink px-2 py-1 text-xs whitespace-nowrap text-paper group-hover:block">
+                        +{row.potentialPoints} more possible
+                      </span>
+                    </span>
+                  ) : (
+                    <>{row.score} pts</>
+                  )}
                   {row.scorableCount > 0 && (
                     <>
                       {" "}
