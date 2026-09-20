@@ -36,7 +36,10 @@ export default async function SplashPage() {
           Welcome to bearBracket! This site allows you to set up your own bracket based on
           the Katmai National Park base bracket, then follow along with the
           competition and see how you stack up against other fans of
-          beautiful bulky bears. If you&apos;re new to Fat Bear Week, check {" "}
+          beautiful bulky bears.
+        </p>
+        <p className="text-sm text-ink-soft">
+          If you&apos;re new to Fat Bear Week, check {" "}
           <Link href="/what-is-fat-bear-week" className="underline hover:text-ink">
             our primer here!
           </Link>
