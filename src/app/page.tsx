@@ -33,8 +33,7 @@ export default async function SplashPage() {
         </div>
 
         <p className="text-sm text-ink-soft">
-          Welcome to bearBracket! This is a tiny web app built for Fat Bear
-          Week. This site allows you to set up your own bracket based on
+          Welcome to bearBracket! This site allows you to set up your own bracket based on
           the Katmai National Park base bracket, then follow along with the
           competition and see how you stack up against other fans of
           beautiful bulky bears. If you&apos;re new to Fat Bear Week, check {" "}
