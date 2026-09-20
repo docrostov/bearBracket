@@ -33,7 +33,14 @@ export default async function SplashPage() {
         </div>
 
         <p className="text-sm text-ink-soft">
-          Welcome to bearBracket! This is a tiny web app built for Fat Bear Week. This site allows you to set up your own bracket based on the Katmai National Park base bracket, then follow along with the competition and see how you stack up against other fans of beautiful bulky bears.
+          Welcome to bearBracket! This is a tiny web app built for Fat Bear
+          Week. This site allows you to set up your own bracket based on
+          the Katmai National Park base bracket, then follow along with the
+          competition and see how you stack up against other fans of
+          beautiful bulky bears.{" "}
+          <Link href="/what-is-fat-bear-week" className="underline hover:text-ink">
+            New to Fat Bear Week?
+          </Link>
         </p>
 
         <div className="flex w-full flex-col gap-3 pt-2">
@@ -43,7 +50,7 @@ export default async function SplashPage() {
                 href={userId ? `/competitions/${slug}/bracket` : "/login"}
                 className="rounded-full bg-ink px-5 py-3 text-sm font-medium text-paper transition-colors hover:opacity-90"
               >
-                {userId ? "My Bracket" : "Sign in to get started"}
+                {userId ? "My Bracket" : "Sign in or register here to get started"}
               </Link>
               <div className="flex justify-center gap-4 text-sm font-medium text-ink-soft">
                 <Link href={`/competitions/${slug}/results`} className="hover:text-ink">

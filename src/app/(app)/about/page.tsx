@@ -1,3 +1,6 @@
+import Image from "next/image";
+import Link from "next/link";
+
 export default function AboutPage() {
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 px-6 py-12">
@@ -5,10 +8,22 @@ export default function AboutPage() {
         <h1 className="font-heading text-2xl font-bold text-ink">About</h1>
       </div>
 
-      <section className="flex flex-col gap-2">
+      <section className="flex flex-col gap-2 overflow-hidden">
         <h2 className="text-xs font-medium uppercase tracking-wide text-muted">
           About bearBracket
         </h2>
+        <figure className="float-right ml-4 mb-2 w-32 sm:w-40">
+          <Image
+            src="/aaron-holly-costume-2019.webp"
+            alt="Aaron and his wife dressed up as 435 Holly for Halloween in 2019"
+            width={709}
+            height={928}
+            className="w-full rounded-md border border-border object-cover"
+          />
+          <figcaption className="mt-1 text-center text-xs text-muted">
+            Dressed up as 435 Holly for Halloween in 2019
+          </figcaption>
+        </figure>
         <p className="text-sm text-ink-soft">
           Hello! I&apos;m Aaron. For more years than my daughter can count, I&apos;ve been holding a small competition for my coworkers, family, and friends to see who picks the best bracket for Fat Bear Week every year. Normally, the way I run the competition is through a bunch of Google Sheets magic, Google Forms, and a bunch of manual work. After many years of this, and often having people stop entering because the process was too tedious, I wanted to make things a bit easier for folks.
         </p>
@@ -28,6 +43,14 @@ export default function AboutPage() {
           Resources for filling out your bracket
         </h2>
         <ul className="flex flex-col gap-2 text-sm">
+          <li>
+            <Link
+              href="/what-is-fat-bear-week"
+              className="text-ink underline hover:text-ink-soft"
+            >
+              New to Fat Bear Week? Start here
+            </Link>
+          </li>
           <li>
             <a
               href="https://explore.org/fat-bear-week"

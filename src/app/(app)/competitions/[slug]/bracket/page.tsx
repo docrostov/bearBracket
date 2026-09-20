@@ -37,14 +37,22 @@ export default async function MyBracketPage(
 
   let initialPicks: { matchupId: string; contestantId: string }[] = [];
   let initialEntryId: string | null = null;
+  let needsProfileSetup = false;
 
   if (userId) {
-    const { data: entry } = await supabase
-      .from("entries")
-      .select("id")
-      .eq("competition_id", competition.id)
-      .eq("user_id", userId)
-      .maybeSingle();
+    const [{ data: entry }, { data: profile }] = await Promise.all([
+      supabase
+        .from("entries")
+        .select("id")
+        .eq("competition_id", competition.id)
+        .eq("user_id", userId)
+        .maybeSingle(),
+      supabase
+        .from("profiles")
+        .select("display_name, emoji")
+        .eq("id", userId)
+        .single(),
+    ]);
 
     if (entry) {
       initialEntryId = entry.id;
@@ -57,6 +65,12 @@ export default async function MyBracketPage(
         contestantId: p.picked_contestant_id,
       }));
     }
+
+    // Only nudge someone whose profile is still the untouched default —
+    // a name with no emoji is a deliberate choice (it's optional), not
+    // something to nag about.
+    needsProfileSetup =
+      profile?.display_name === "New Bear Fan" && profile?.emoji === null;
   }
 
   return (
@@ -87,6 +101,16 @@ export default async function MyBracketPage(
         initialPicks={initialPicks}
         initialEntryId={initialEntryId}
       />
+
+      {needsProfileSetup && (
+        <p className="text-sm text-ink-soft">
+          Want to show up as more than &quot;New Bear Fan&quot; on the leaderboard?{" "}
+          <Link href="/profile" className="font-medium underline">
+            Set your name and emoji
+          </Link>
+          .
+        </p>
+      )}
     </main>
   );
 }

@@ -27,14 +27,22 @@ export default function LoginPage() {
   return (
     <div className="flex flex-1 items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <h1 className="font-heading text-2xl font-bold text-ink">Sign in</h1>
+        <h1 className="font-heading text-2xl font-bold text-ink">
+          Sign in or create an account
+        </h1>
         <p className="mt-2 text-sm text-ink-soft">
-          No password needed &mdash; we&apos;ll email you a sign-in link.
+          There&apos;s no separate registration step and no password to
+          remember. Just type your email below: if you&apos;re new, this
+          creates your account automatically; if you&apos;ve used
+          bearBracket before, it signs you right back in. Either way,
+          we&apos;ll email you a link to click instead of a password.
         </p>
 
         {status === "sent" ? (
           <p className="mt-6 rounded-md border border-border bg-surface px-4 py-3 text-sm text-ink-soft">
-            Check {email} for a sign-in link.
+            Check {email} for an email from us, then click the link inside
+            to finish signing in. Don&apos;t see it in a minute or two?
+            Check your spam folder.
           </p>
         ) : (
           <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3">
