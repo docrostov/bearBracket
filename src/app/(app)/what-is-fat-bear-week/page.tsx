@@ -1,4 +1,22 @@
-export default function WhatIsFatBearWeekPage() {
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
+
+export default async function WhatIsFatBearWeekPage() {
+  const supabase = await createClient();
+
+  const [{ data: claims }, { data: competition }] = await Promise.all([
+    supabase.auth.getClaims(),
+    supabase
+      .from("competitions")
+      .select("slug")
+      .order("year", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+  ]);
+
+  const userId = claims?.claims.sub;
+  const slug = competition?.slug;
+
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 px-6 py-12">
       <div className="flex flex-col gap-1">
@@ -10,7 +28,14 @@ export default function WhatIsFatBearWeekPage() {
       <section className="flex flex-col gap-3">
         <p className="text-sm text-ink-soft">
           Fat Bear Week is a yearly event at{" "}
-          <span className="font-medium text-ink">Katmai National Park</span>{" "}
+          <a
+            href="https://explore.org/fat-bear-week"
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium text-ink underline hover:text-ink-soft"
+          >
+            Katmai National Park
+          </a>{" "}
           in Alaska. Katmai has unusually rich conditions for salmon
           breeding, so every fall, bears from all over Alaska and the
           Canadian northwest flock there for their fill of all-you-can-eat
@@ -59,6 +84,15 @@ export default function WhatIsFatBearWeekPage() {
           </li>
         </ul>
       </section>
+
+      {slug && (
+        <Link
+          href={userId ? `/competitions/${slug}/bracket` : "/login"}
+          className="self-start rounded-full bg-ink px-5 py-3 text-sm font-medium text-paper transition-colors hover:opacity-90"
+        >
+          {userId ? "Check your bracket" : "Sign in or register here to get started"}
+        </Link>
+      )}
     </main>
   );
 }

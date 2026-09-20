@@ -12,30 +12,38 @@ export default function AboutPage() {
         <h2 className="text-xs font-medium uppercase tracking-wide text-muted">
           About bearBracket
         </h2>
-        <figure className="float-right ml-4 mb-2 w-32 sm:w-40">
-          <Image
-            src="/aaron-holly-costume-2019.webp"
-            alt="Aaron and his wife dressed up as 435 Holly for Halloween in 2019"
-            width={709}
-            height={928}
-            className="w-full rounded-md border border-border object-cover"
-          />
-          <figcaption className="mt-1 text-center text-xs text-muted">
-            Dressed up as 435 Holly for Halloween in 2019
-          </figcaption>
-        </figure>
-        <p className="text-sm text-ink-soft">
-          Hello! I&apos;m Aaron. For more years than my daughter can count, I&apos;ve been holding a small competition for my coworkers, family, and friends to see who picks the best bracket for Fat Bear Week every year. Normally, the way I run the competition is through a bunch of Google Sheets magic, Google Forms, and a bunch of manual work. After many years of this, and often having people stop entering because the process was too tedious, I wanted to make things a bit easier for folks.
-        </p>
-        <p className="text-sm text-ink-soft">
-          So... enter bearBracket! I&apos;ve been wanting to build a little app like this for years now. I think I originally made the GitHub repo for this in 2022 or something of the like. After years of telling myself I&apos;d do it next year and never actually doing it, this year finally proved to be the one. I will note, this was built with a pretty big assist from Claude Code. I know I have many friends who aren&apos;t particularly keen on AI, and I am sympathetic to many of the concerns around these tools. But man... it was a huge help here. This site would not be nearly as good without it!
-        </p>
-        <p className="text-sm text-ink-soft">
-          Hopefully, this whole thing will make it a bit easier for folks to both enter my little competition and follow along to see how your brackets are performing against the actual results. Pretty much every single person who is using this site should know where to find me if you have any questions, so I don&apos;t really see the need to put any sort of contact info here. You know where to find me, bucko.
-        </p>
-        <p className="text-sm text-ink-soft">
-          Oh! Also. Obligatory disclaimer: this site is not affiliated with or connected to Katmai National Park or explore.org in any way. I am just a long-time fan of Fat Bear Week. Also, secondarily: my favorite all-time bears are 89 Backpack, 435 Holly, and 409 Beadnose. Gotta stan for my favs.
-        </p>
+        {/* A plain block container, not flex — CSS float has no effect on
+            flex children (flex layout takes over positioning and ignores
+            float/clear entirely), which is why this needs its own
+            non-flex wrapper for the image to actually float and let text
+            wrap around it. space-y-* still works here since it's just
+            margins, not flex gap. */}
+        <div className="space-y-3">
+          <figure className="float-right ml-4 mb-2 w-32 sm:w-40">
+            <Image
+              src="/aaron-holly-costume-2019.webp"
+              alt="Aaron and his wife dressed up as 435 Holly for Halloween in 2019"
+              width={709}
+              height={928}
+              className="w-full rounded-md border border-border object-cover"
+            />
+            <figcaption className="mt-1 text-center text-xs text-muted">
+              Dressed up as 435 Holly for Halloween in 2019
+            </figcaption>
+          </figure>
+          <p className="text-sm text-ink-soft">
+            Hello! I&apos;m Aaron. For more years than my daughter can count, I&apos;ve been holding a small competition for my coworkers, family, and friends to see who picks the best bracket for Fat Bear Week every year. Normally, the way I run the competition is through a bunch of Google Sheets magic, Google Forms, and a bunch of manual work. After many years of this, and often having people stop entering because the process was too tedious, I wanted to make things a bit easier for folks.
+          </p>
+          <p className="text-sm text-ink-soft">
+            So... enter bearBracket! I&apos;ve been wanting to build a little app like this for years now. I think I originally made the GitHub repo for this in 2022 or something of the like. After years of telling myself I&apos;d do it next year and never actually doing it, this year finally proved to be the one. I will note, this was built with a pretty big assist from Claude Code. I know I have many friends who aren&apos;t particularly keen on AI, and I am sympathetic to many of the concerns around these tools. But man... it was a huge help here. This site would not be nearly as good without it!
+          </p>
+          <p className="text-sm text-ink-soft">
+            Hopefully, this whole thing will make it a bit easier for folks to both enter my little competition and follow along to see how your brackets are performing against the actual results. Pretty much every single person who is using this site should know where to find me if you have any questions, so I don&apos;t really see the need to put any sort of contact info here. You know where to find me, bucko.
+          </p>
+          <p className="text-sm text-ink-soft">
+            Oh! Also. Obligatory disclaimer: this site is not affiliated with or connected to Katmai National Park or explore.org in any way. I am just a long-time fan of Fat Bear Week. Also, secondarily: my favorite all-time bears are 89 Backpack, 435 Holly, and 409 Beadnose. Gotta stan for my favs.
+          </p>
+        </div>
       </section>
 
       <section className="flex flex-col gap-2">
@@ -44,22 +52,22 @@ export default function AboutPage() {
         </h2>
         <ul className="flex flex-col gap-2 text-sm">
           <li>
-            <Link
-              href="/what-is-fat-bear-week"
-              className="text-ink underline hover:text-ink-soft"
-            >
-              New to Fat Bear Week? Start here
-            </Link>
-          </li>
-          <li>
             <a
               href="https://explore.org/fat-bear-week"
               target="_blank"
               rel="noreferrer"
               className="text-ink underline hover:text-ink-soft"
             >
-              Explore.org: Fat Bear Week
+              This is the official site for Fat Bear Week at Explore.org. It&apos;s where you can vote on each round!
             </a>
+          </li>
+          <li>
+            <Link
+              href="/what-is-fat-bear-week"
+              className="text-ink underline hover:text-ink-soft"
+            >
+              I wrote a little primer on what Fat Bear Week is! You can read it here.
+            </Link>
           </li>
           <li>
             <a
