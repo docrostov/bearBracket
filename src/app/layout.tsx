@@ -15,16 +15,21 @@ const baloo = Baloo_2({
 
 export const metadata: Metadata = {
   title: "bearBracket",
-  description: "Build, store, and compare brackets.",
+  description: "Brackets! For bears. And other stuff, too, I suppose.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${baloo.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${baloo.variable} antialiased`}
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      {/* min-h-[100dvh] instead of min-h-full: iOS Safari's address bar
+          shrinks/grows the viewport, and a percentage-height chain
+          (html/body height:100%) resolves against the *tallest* possible
+          viewport, leaving a phantom scrollable gap once the bar shows.
+          Dynamic viewport height tracks the real visible height instead. */}
+      <body className="flex min-h-[100dvh] flex-col">{children}</body>
     </html>
   );
 }

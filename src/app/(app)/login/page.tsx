@@ -56,7 +56,7 @@ export default function LoginPage() {
             </button>
             {status === "error" && (
               <p className="text-sm text-danger">
-                Something went wrong sending that link. Try again.
+                Something went wrong sending that link. Try again, or contact the guy in the About page.
               </p>
             )}
           </form>

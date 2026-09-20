@@ -32,11 +32,8 @@ export default async function SplashPage() {
           />
         </div>
 
-        {/* TODO(Aaron): replace with your own welcome note. */}
         <p className="text-sm text-ink-soft">
-          Build your bracket, track how it holds up against the real thing,
-          and see how you stack up against everyone else picking along with
-          you.
+          Welcome to bearBracket! This is a tiny web app built for Fat Bear Week. This site allows you to set up your own bracket based on the Katmai National Park base bracket, then follow along with the competition and see how you stack up against other fans of beautiful bulky bears.
         </p>
 
         <div className="flex w-full flex-col gap-3 pt-2">

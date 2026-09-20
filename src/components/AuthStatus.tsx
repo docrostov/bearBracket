@@ -25,10 +25,10 @@ export default async function AuthStatus() {
     .single();
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex min-w-0 items-center gap-3">
       <Link
         href="/profile"
-        className="text-sm text-ink-soft hover:text-ink"
+        className="max-w-[140px] truncate text-sm text-ink-soft hover:text-ink sm:max-w-none"
       >
         {profile?.emoji && <span className="mr-1">{profile.emoji}</span>}
         {profile?.display_name ?? "Bear fan"}

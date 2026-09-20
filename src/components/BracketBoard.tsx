@@ -39,11 +39,20 @@ export default function BracketBoard({
   const [errorsByMatchupId, setErrorsByMatchupId] = useState(
     () => new Map<string, string>()
   );
-  // Only one matchup's photos expand at a time — several expanded together
-  // would overlap each other once scaled up.
-  const [expandedMatchupId, setExpandedMatchupId] = useState<string | null>(
-    null
+  // Any number of matchups can be expanded at once — each row stacks
+  // independently, so there's no overlap concern with several open together.
+  const [expandedMatchupIds, setExpandedMatchupIds] = useState<Set<string>>(
+    () => new Set()
   );
+
+  function toggleExpanded(matchupId: string) {
+    setExpandedMatchupIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(matchupId)) next.delete(matchupId);
+      else next.add(matchupId);
+      return next;
+    });
+  }
   const [isClearing, setIsClearing] = useState(false);
   const [clearError, setClearError] = useState<string | null>(null);
   const [, startTransition] = useTransition();
@@ -62,6 +71,15 @@ export default function BracketBoard({
   const pickedCount = pickableMatchups.filter((m) => picks.has(m.id)).length;
   const remainingCount = pickableMatchups.length - pickedCount;
   const isComplete = pickableMatchups.length > 0 && remainingCount === 0;
+
+  const allMatchupIds = matchups.map((m) => m.id);
+  const allExpanded =
+    allMatchupIds.length > 0 &&
+    allMatchupIds.every((id) => expandedMatchupIds.has(id));
+
+  function toggleExpandAll() {
+    setExpandedMatchupIds(allExpanded ? new Set() : new Set(allMatchupIds));
+  }
 
   function handlePick(matchup: MatchupLite, contestantId: string) {
     const previous = picks.get(matchup.id) ?? null;
@@ -160,6 +178,18 @@ export default function BracketBoard({
         </div>
       )}
 
+      {matchups.length > 0 && (
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={toggleExpandAll}
+            className="text-xs text-muted underline decoration-dotted hover:text-ink"
+          >
+            {allExpanded ? "Collapse all photos" : "Expand all photos"}
+          </button>
+        </div>
+      )}
+
       <div className="flex flex-col gap-10">
         {rounds.map((round) => (
         <section key={round} className="flex flex-col gap-3">
@@ -184,7 +214,7 @@ export default function BracketBoard({
                 const pickedId = picks.get(matchup.id) ?? null;
                 const error = errorsByMatchupId.get(matchup.id);
                 const isPending = pendingMatchupId === matchup.id;
-                const isExpanded = expandedMatchupId === matchup.id;
+                const isExpanded = expandedMatchupIds.has(matchup.id);
                 const canExpand = optionA !== null && optionB !== null;
                 // A bye has nothing to vote on — the lone contestant
                 // advances automatically, not by anyone picking them.
@@ -212,11 +242,7 @@ export default function BracketBoard({
                         </p>
                         <button
                           type="button"
-                          onClick={() =>
-                            setExpandedMatchupId((current) =>
-                              current === matchup.id ? null : matchup.id
-                            )
-                          }
+                          onClick={() => toggleExpanded(matchup.id)}
                           aria-label={
                             isExpanded ? "Hide photo" : "Show photo"
                           }
@@ -277,11 +303,7 @@ export default function BracketBoard({
                       <button
                         type="button"
                         disabled={!canExpand}
-                        onClick={() =>
-                          setExpandedMatchupId((current) =>
-                            current === matchup.id ? null : matchup.id
-                          )
-                        }
+                        onClick={() => toggleExpanded(matchup.id)}
                         aria-label={
                           isExpanded ? "Collapse photos" : "Expand photos"
                         }

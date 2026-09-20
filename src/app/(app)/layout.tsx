@@ -38,7 +38,7 @@ export default async function AppLayout({
             bearBracket
           </span>
         </Link>
-        <nav className="order-3 flex w-full flex-wrap items-center gap-x-4 gap-y-1 text-sm font-medium text-ink-soft sm:order-none sm:w-auto">
+        <nav className="order-3 flex w-full flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm font-medium text-ink-soft sm:order-none sm:w-auto sm:justify-start">
           {slug && (
             <>
               <Link href={`/competitions/${slug}/results`} className="hover:text-ink">
