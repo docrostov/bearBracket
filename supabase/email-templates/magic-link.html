@@ -2,7 +2,8 @@
   Paste into Supabase Dashboard > Authentication > Emails > Magic Link > Source.
   Subject line to set alongside it: 🐻 Your bearBracket sign-in link
 
-  CODE-ONLY, deliberately — no clickable link at all. History:
+  Code-only for actual sign-in, deliberately — no link that itself
+  authenticates. History:
   1. A URL-fragment trick (src/app/auth/confirm/page.tsx, now unreferenced)
      hid the real Supabase link to dodge corporate email link-prescanning
      (e.g. Microsoft Defender Safe Links). Got a real test quarantined as
@@ -14,14 +15,16 @@
      the code aren't independently single-use, they're two views onto
      the same one-time secret. Safe Links prefetches every link in every
      incoming email regardless of whether the human ever clicks it — so
-     the mere presence of a scannable link silently burns the code too,
-     even if you go straight for the code and never touch the button.
-  3. Only fix that's actually reliable for scanned accounts: no link in
-     the email at all. Verified client-side via
-     supabase.auth.verifyOtp({ type: 'email' }) on /login. This does
-     mean no one-click convenience for anyone, Gmail included — a real
-     trade-off, made deliberately given how much of the audience is on
-     scanned work email.
+     the mere presence of an *authenticating* link silently burns the
+     code too, even if you go straight for the code and never touch it.
+  3. This version drops {{ .ConfirmationURL }} (Supabase's own
+     authenticating link) entirely, but keeps a plain link to our own
+     /login page below. That's safe for anything to prefetch — it's a
+     static page, visiting it has no side effects and consumes nothing.
+     It's there purely so someone can tap through to the sign-in page
+     from their phone's mail app rather than having to remember the URL
+     or type it by hand. Verified client-side via
+     supabase.auth.verifyOtp({ type: 'email' }) on /login.
 -->
 <div style="background-color:#CDB49A;padding:32px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <div style="max-width:480px;margin:0 auto;background-color:#E8DAC0;border-radius:16px;border:1px solid #B99B74;overflow:hidden;">
@@ -35,8 +38,13 @@
         Enter this code on the bearBracket sign-in page to finish signing
         back in:
       </p>
-      <p style="margin:0 0 20px;font-size:30px;font-weight:700;letter-spacing:4px;color:#34190E;">
+      <p style="margin:0 0 24px;font-size:30px;font-weight:700;letter-spacing:4px;color:#34190E;">
         {{ .Token }}
+      </p>
+      <p style="margin:0 0 20px;">
+        <a href="https://bearbracket.com/login" style="display:inline-block;background-color:#34190E;color:#F4E9D8;text-decoration:none;padding:12px 28px;border-radius:999px;font-size:14px;font-weight:600;">
+          Go to the sign-in page
+        </a>
       </p>
       <p style="margin:0;font-size:12px;color:#8C7357;">
         This code expires shortly and can only be used once.
