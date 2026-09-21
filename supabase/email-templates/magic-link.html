@@ -2,16 +2,26 @@
   Paste into Supabase Dashboard > Authentication > Emails > Magic Link > Source.
   Subject line to set alongside it: 🐻 Your bearBracket sign-in link
 
-  Links directly to Supabase's ConfirmationURL (see confirm-signup.html
-  for why — a URL-fragment trick that briefly replaced this got a real
-  test quarantined as "High Confidence Phish" by Microsoft Defender).
-
-  Also shows {{ .Token }} — the numeric code from the SAME signInWithOtp
-  call, verified client-side via supabase.auth.verifyOtp({ type: 'email' })
-  on /login. No link involved at all for this path, so it's immune to
-  both the link-prescanning problem (nothing for a scanner to consume)
-  and the phishing-pattern problem (no obfuscated URL to flag) — a
-  fallback for whichever recipients still have trouble with the link.
+  CODE-ONLY, deliberately — no clickable link at all. History:
+  1. A URL-fragment trick (src/app/auth/confirm/page.tsx, now unreferenced)
+     hid the real Supabase link to dodge corporate email link-prescanning
+     (e.g. Microsoft Defender Safe Links). Got a real test quarantined as
+     "High Confidence Phish" — that exact "domain A linking to an encoded
+     domain B URL" shape is also a well-known phishing pattern.
+  2. Reverted to a plain {{ .ConfirmationURL }} link, with {{ .Token }}
+     shown alongside as a fallback code. Reached the inbox fine this
+     time — but entering the code STILL failed. Root cause: the link and
+     the code aren't independently single-use, they're two views onto
+     the same one-time secret. Safe Links prefetches every link in every
+     incoming email regardless of whether the human ever clicks it — so
+     the mere presence of a scannable link silently burns the code too,
+     even if you go straight for the code and never touch the button.
+  3. Only fix that's actually reliable for scanned accounts: no link in
+     the email at all. Verified client-side via
+     supabase.auth.verifyOtp({ type: 'email' }) on /login. This does
+     mean no one-click convenience for anyone, Gmail included — a real
+     trade-off, made deliberately given how much of the audience is on
+     scanned work email.
 -->
 <div style="background-color:#CDB49A;padding:32px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <div style="max-width:480px;margin:0 auto;background-color:#E8DAC0;border-radius:16px;border:1px solid #B99B74;overflow:hidden;">
@@ -20,23 +30,16 @@
       <div style="font-size:20px;font-weight:700;color:#34190E;">bearBracket</div>
     </div>
     <div style="padding:32px 28px;text-align:center;">
-      <h1 style="margin:0 0 12px;font-size:20px;color:#34190E;">Your sign-in link 🐻</h1>
+      <h1 style="margin:0 0 12px;font-size:20px;color:#34190E;">Your sign-in code 🐻</h1>
       <p style="margin:0 0 20px;font-size:14px;line-height:1.6;color:#5B3D22;">
-        Follow the link below to sign back in to bearBracket.
+        Enter this code on the bearBracket sign-in page to finish signing
+        back in:
       </p>
-      <p style="margin:0 0 20px;">
-        <a href="{{ .ConfirmationURL }}" style="display:inline-block;background-color:#34190E;color:#F4E9D8;text-decoration:none;padding:12px 28px;border-radius:999px;font-size:14px;font-weight:600;">
-          Sign in
-        </a>
-      </p>
-      <p style="margin:0 0 8px;font-size:12px;color:#8C7357;">
-        Or, if the button doesn&rsquo;t work, enter this code on the sign-in page:
-      </p>
-      <p style="margin:0 0 20px;font-size:26px;font-weight:700;letter-spacing:4px;color:#34190E;">
+      <p style="margin:0 0 20px;font-size:30px;font-weight:700;letter-spacing:4px;color:#34190E;">
         {{ .Token }}
       </p>
       <p style="margin:0;font-size:12px;color:#8C7357;">
-        This link and code expire shortly and can only be used once.
+        This code expires shortly and can only be used once.
       </p>
     </div>
   </div>
