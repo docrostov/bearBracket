@@ -1,10 +1,11 @@
 "use client";
 
 import { Suspense, useState, type FormEvent } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 type Status = "idle" | "sending" | "sent" | "error";
+type OtpStatus = "idle" | "verifying" | "error";
 
 export default function LoginPage() {
   return (
@@ -15,8 +16,11 @@ export default function LoginPage() {
 }
 
 function LoginForm() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
+  const [otpCode, setOtpCode] = useState("");
+  const [otpStatus, setOtpStatus] = useState<OtpStatus>("idle");
   const callbackFailed = useSearchParams().get("error") === "auth-callback-failed";
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -32,6 +36,25 @@ function LoginForm() {
     });
 
     setStatus(error ? "error" : "sent");
+  }
+
+  async function handleVerifyCode(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setOtpStatus("verifying");
+
+    const supabase = createClient();
+    const { error } = await supabase.auth.verifyOtp({
+      email,
+      token: otpCode.trim(),
+      type: "email",
+    });
+
+    if (error) {
+      setOtpStatus("error");
+    } else {
+      router.push("/");
+      router.refresh();
+    }
   }
 
   return (
@@ -54,17 +77,53 @@ function LoginForm() {
             these links only work once, and some email providers (common on
             work email) automatically open links to scan them for safety
             before you ever click — which uses up the link before you get
-            to it. Request a fresh one below and click it directly from
-            your phone or computer&apos;s mail app rather than a preview.
+            to it. Request a fresh one below, then either click the link
+            directly from your phone or computer&apos;s mail app, or use
+            the code from that same email instead.
           </p>
         )}
 
         {status === "sent" ? (
-          <p className="mt-6 rounded-md border border-border bg-surface px-4 py-3 text-sm text-ink-soft">
-            Check {email} for an email from us, then click the link inside
-            to finish signing in. Don&apos;t see it in a minute or two?
-            Check your spam folder.
-          </p>
+          <div className="mt-6 flex flex-col gap-4">
+            <p className="rounded-md border border-border bg-surface px-4 py-3 text-sm text-ink-soft">
+              Check {email} for an email from us, then click the link
+              inside to finish signing in. Don&apos;t see it in a minute
+              or two? Check your spam folder.
+            </p>
+
+            <form
+              onSubmit={handleVerifyCode}
+              className="flex flex-col gap-2 rounded-md border border-border bg-surface px-4 py-3"
+            >
+              <p className="text-sm text-ink-soft">
+                Link not working? That same email has a code in it — enter
+                it here instead:
+              </p>
+              <input
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                required
+                placeholder="Code from the email"
+                value={otpCode}
+                onChange={(event) => setOtpCode(event.target.value)}
+                className="rounded-md border border-border bg-cream px-3 py-2 text-sm text-ink outline-none focus:border-border-strong"
+              />
+              <button
+                type="submit"
+                disabled={otpStatus === "verifying"}
+                className="self-start rounded-full bg-ink px-5 py-2 text-sm font-medium text-paper transition-colors hover:opacity-90 disabled:opacity-50"
+              >
+                {otpStatus === "verifying" ? "Checking…" : "Use this code"}
+              </button>
+              {otpStatus === "error" && (
+                <p className="text-sm text-danger">
+                  That code didn&apos;t work — double check it, or request
+                  a fresh link/code above.
+                </p>
+              )}
+            </form>
+          </div>
         ) : (
           <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3">
             <input

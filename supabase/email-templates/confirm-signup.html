@@ -2,12 +2,30 @@
   Paste into Supabase Dashboard > Authentication > Emails > Confirm signup > Source.
   Subject line to set alongside it: 🐻 Confirm your bearBracket account
 
-  The button links to our own /auth/confirm page with the real
-  ConfirmationURL embedded after '#' (a URL fragment), not a direct link
-  to Supabase's verify endpoint. Fragments are never sent in an HTTP
-  request, so email security scanners that prefetch links (e.g. Microsoft
-  Defender Safe Links, common on work/O365 email) can't burn the one-time
-  token before a human clicks. See src/app/auth/confirm/page.tsx.
+  Links directly to Supabase's ConfirmationURL (see history below — a
+  URL-fragment trick that briefly replaced this got a real test
+  quarantined as "High Confidence Phish" by Microsoft Defender).
+
+  Also shows {{ .Token }} — the numeric code from the same auth
+  attempt, verified client-side via supabase.auth.verifyOtp({ type:
+  'email' }) on /login (works for both new and returning users; the
+  old separate 'signup'/'magiclink' verifyOtp types are deprecated in
+  favor of the single 'email' type). No link involved at all for this
+  path, so it's immune to both the link-prescanning problem (nothing
+  for a scanner to consume) and the phishing-pattern problem (no
+  obfuscated URL to flag) — a fallback for whichever recipients still
+  have trouble with the link.
+
+  History: /auth/confirm (src/app/auth/confirm/page.tsx, still in the
+  codebase but unreferenced) hid the real link behind a "domain A
+  linking to an encoded domain B URL" shape specifically to dodge
+  corporate email link-prescanning (e.g. Microsoft Defender Safe
+  Links). That exact shape is also a well-known phishing-obfuscation
+  pattern, and a real test on 2026-09-21 got quarantined as "High
+  Confidence Phish" the one time it was used, after prior plain-link
+  sends had reached the inbox fine (just slowly). Reverted: silent
+  quarantine is worse than the occasional prefetch-consumed link,
+  which the code above now solves without touching the link at all.
 -->
 <div style="background-color:#CDB49A;padding:32px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <div style="max-width:480px;margin:0 auto;background-color:#E8DAC0;border-radius:16px;border:1px solid #B99B74;overflow:hidden;">
@@ -21,12 +39,18 @@
         Confirm your email to finish creating your account and start building your Fat Bear Week bracket.
       </p>
       <p style="margin:0 0 20px;">
-        <a href="https://bearbracket.com/auth/confirm#{{ .ConfirmationURL }}" style="display:inline-block;background-color:#34190E;color:#F4E9D8;text-decoration:none;padding:12px 28px;border-radius:999px;font-size:14px;font-weight:600;">
+        <a href="{{ .ConfirmationURL }}" style="display:inline-block;background-color:#34190E;color:#F4E9D8;text-decoration:none;padding:12px 28px;border-radius:999px;font-size:14px;font-weight:600;">
           Confirm email address
         </a>
       </p>
+      <p style="margin:0 0 8px;font-size:12px;color:#8C7357;">
+        Or, if the button doesn&rsquo;t work, enter this code on the sign-in page:
+      </p>
+      <p style="margin:0 0 20px;font-size:26px;font-weight:700;letter-spacing:4px;color:#34190E;">
+        {{ .Token }}
+      </p>
       <p style="margin:0;font-size:12px;color:#8C7357;">
-        This link expires shortly and can only be used once.
+        This link and code expire shortly and can only be used once.
       </p>
     </div>
   </div>
