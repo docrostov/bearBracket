@@ -1,6 +1,13 @@
 <!--
   Paste into Supabase Dashboard > Authentication > Emails > Confirm signup > Source.
   Subject line to set alongside it: 🐻 Confirm your bearBracket account
+
+  The button links to our own /auth/confirm page with the real
+  ConfirmationURL embedded after '#' (a URL fragment), not a direct link
+  to Supabase's verify endpoint. Fragments are never sent in an HTTP
+  request, so email security scanners that prefetch links (e.g. Microsoft
+  Defender Safe Links, common on work/O365 email) can't burn the one-time
+  token before a human clicks. See src/app/auth/confirm/page.tsx.
 -->
 <div style="background-color:#CDB49A;padding:32px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <div style="max-width:480px;margin:0 auto;background-color:#E8DAC0;border-radius:16px;border:1px solid #B99B74;overflow:hidden;">
@@ -14,7 +21,7 @@
         Confirm your email to finish creating your account and start building your Fat Bear Week bracket.
       </p>
       <p style="margin:0 0 20px;">
-        <a href="{{ .ConfirmationURL }}" style="display:inline-block;background-color:#34190E;color:#F4E9D8;text-decoration:none;padding:12px 28px;border-radius:999px;font-size:14px;font-weight:600;">
+        <a href="https://bearbracket.com/auth/confirm#{{ .ConfirmationURL }}" style="display:inline-block;background-color:#34190E;color:#F4E9D8;text-decoration:none;padding:12px 28px;border-radius:999px;font-size:14px;font-weight:600;">
           Confirm email address
         </a>
       </p>
