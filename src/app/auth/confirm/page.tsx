@@ -23,7 +23,21 @@ export default function AuthConfirmPage() {
   useEffect(() => {
     const fragment = window.location.hash.slice(1);
     if (fragment) {
-      setConfirmationUrl(fragment);
+      // Supabase's template engine percent-encodes whatever gets
+      // substituted into an href attribute, including the reserved
+      // characters (:, /, ?, &, =) in the confirmation URL we place
+      // after '#' — it has no way to know that value is itself a
+      // complete, already-formed URL meant to be left raw. Decode it
+      // back before using it. Falls back to the raw value if it somehow
+      // arrives un-encoded (decodeURIComponent is a no-op on a string
+      // with no percent-sequences).
+      let decoded = fragment;
+      try {
+        decoded = decodeURIComponent(fragment);
+      } catch {
+        // Malformed sequence — use the raw fragment as-is.
+      }
+      setConfirmationUrl(decoded);
       setStatus("ready");
     } else {
       setStatus("missing");
