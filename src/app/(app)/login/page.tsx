@@ -1,13 +1,23 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { Suspense, useState, type FormEvent } from "react";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
 export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
+  const callbackFailed = useSearchParams().get("error") === "auth-callback-failed";
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -37,6 +47,17 @@ export default function LoginPage() {
           bearBracket before, it signs you right back in. Either way,
           we&apos;ll email you a link to click instead of a password.
         </p>
+
+        {callbackFailed && status !== "sent" && (
+          <p className="mt-4 rounded-md border border-danger/40 bg-danger-bg px-4 py-3 text-sm text-ink-soft">
+            That sign-in link didn&apos;t work. The most common reason:
+            these links only work once, and some email providers (common on
+            work email) automatically open links to scan them for safety
+            before you ever click — which uses up the link before you get
+            to it. Request a fresh one below and click it directly from
+            your phone or computer&apos;s mail app rather than a preview.
+          </p>
+        )}
 
         {status === "sent" ? (
           <p className="mt-6 rounded-md border border-border bg-surface px-4 py-3 text-sm text-ink-soft">
